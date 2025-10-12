@@ -1,0 +1,89 @@
+/* Styles basiques pour votre quiz Quran PWA */
+
+body {
+    margin: 0;
+    font-family: 'Amiri', 'Noto Sans Arabic', serif, sans-serif;
+    background: linear-gradient(135deg, #F8FFFE 0%, #F5F8FA 100%);
+    color: #2C3E50;
+    direction: rtl;
+    text-align: right;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+.page {
+    display: none;
+    min-height: 100vh;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.page.active {
+    display: block;
+}
+
+h1, h2 {
+    color: #21808D;
+}
+
+button {
+    font-family: var(--font-arabic);
+    cursor: pointer;
+    padding: 10px 20px;
+    border: 2px solid #21808D;
+    background-color: white;
+    color: #21808D;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #21808D;
+    color: white;
+}
+
+.mode-btn {
+    display: block;
+    margin: 10px 0;
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 15px;
+    border: 2px solid #21808D;
+    border-radius: 10px;
+    background-color: white;
+    color: #21808D;
+    font-size: 1.1em;
+}
+
+.option-btn.selected {
+    background-color: #21808D;
+    color: white;
+}
+
+.option-btn.correct {
+    background-color: #28a745;
+    color: white;
+}
+
+.option-btn.incorrect {
+    background-color: #dc3545;
+    color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

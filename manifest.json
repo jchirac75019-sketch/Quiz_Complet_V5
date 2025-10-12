@@ -1,0 +1,26 @@
+{
+  "name": "اختبار الآيات القرآنية",
+  "short_name": "اختبار قرآني",
+  "description": "تطبيق اختبار الآيات القرآنية - مصحف حفص 604 صفحة",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#21808D",
+  "theme_color": "#21808D",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education", "lifestyle", "utilities"]
+}
