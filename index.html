@@ -143,6 +143,12 @@ body {
     overflow-x: hidden;
 }
 
+/* Désactive le pull-to-refresh et le débordement vertical à la racine */
+html, body {
+  overscroll-behavior-y: none;   /* Empêche l’effet de rebond et le pull-to-refresh */
+  overscroll-behavior-x: none;
+}
+
 /* Container and Layout */
 .container {
     max-width: 1200px;
@@ -705,6 +711,23 @@ body {
 .highlight-blue {
     color: #2196F3;        /* Bleu vif */
     font-weight: 700;      /* Gras pour renforcer la visibilité */
+}
+
+.question-blink {
+    color: #dc3545 !important;  /* Rouge */
+    font-weight: 600;
+    animation: blink-red 0.5s ease-in-out 3;  /* 3 répétitions de 0.5s chacune */
+}
+
+@keyframes blink-red {
+    0%, 100% { 
+        opacity: 1; 
+        color: #dc3545; 
+    }
+    50% { 
+        opacity: 0.3; 
+        color: #ff6b7a; 
+    }
 }
 
 /* Options */
@@ -13914,6 +13937,7 @@ const pageIndex = {
 };
 
 // Variables globales pour le quiz
+let filtersChanged = false;
 let quizConfig = {};
 let currentQuestion = 0;
 let score = { correct: 0, incorrect: 0 };
@@ -13931,18 +13955,52 @@ let timer = {
 };
 let wakeLock = null;
 
-// Initialisation de l'application
+// Initialisation de l'application avec restauration d'état
 document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-    setupEventListeners();
+    // 1. Préparer l'accueil
     populateSurahSelects();
     updateVerseCount();
-    
-    // Enregistrer le Service Worker pour PWA
+    setupEventListeners();
+
+    // 2. Tenter la restauration de l'état si l'utilisateur n'a pas modifié les filtres
+    const saved = localStorage.getItem('quranQuizState');
+    if (saved && !filtersChanged) {
+        const state = JSON.parse(saved);
+        // Récupérer l'état
+        quizConfig          = state.quizConfig;
+        currentQuestion     = state.currentQuestion;
+        score               = state.score;
+        quizHistory         = state.quizHistory;
+        usedQuestions       = new Set(state.usedQuestions);
+        selectedMode        = state.selectedMode;
+        currentQuestionData = state.currentQuestionData;
+        if (state.timer.startTime) {
+            timer.startTime   = new Date(state.timer.startTime);
+            timer.totalPaused = state.timer.totalPaused;
+        }
+        // Remettre les filtres selon quizConfig
+        populateSurahSelects();
+        document.getElementById('startSurah').value = quizConfig.startSurah;
+        document.getElementById('endSurah').value   = quizConfig.endSurah;
+        document.getElementById('startVerse').value = quizConfig.startVerse;
+        document.getElementById('endVerse').value   = quizConfig.endVerse;
+        updateVerseCount();
+        // Passer au quiz
+        showPage('quizPage');
+        updateQuizInterface();
+        displayCurrentQuestion();
+        startTimer();
+        return;
+    }
+
+    // 3. Sinon, initialisation normale
+    initializeApp();
+
+    // 4. Enregistrer le Service Worker pour PWA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(registration => console.log('Service Worker enregistré'))
-            .catch(error => console.log('Erreur Service Worker:', error));
+            .then(() => console.log('Service Worker enregistré'))
+            .catch(err => console.log('Erreur Service Worker:', err));
     }
 });
 
@@ -13951,33 +14009,94 @@ function initializeApp() {
     showPage('homePage');
 }
 
+
+// Bloquer le rechargement ou la fermeture pendant le quiz en cours
+window.addEventListener('beforeunload', function(e) {
+    if (document.getElementById('quizPage').classList.contains('active') && !quizFinished) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Empêcher la navigation arrière/avant dans l’historique PWA
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function() {
+    history.pushState(null, null, location.href);
+    if (document.getElementById('quizPage').classList.contains('active')) {
+        showPage('quizPage');
+    }
+});
+
+// Réacquérir le Wake Lock si perdu
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !wakeLock) requestWakeLock();
+});
+window.addEventListener('focus', () => {
+    if (!wakeLock) requestWakeLock();
+});
+window.addEventListener('blur', () => {
+    if (!wakeLock) requestWakeLock();
+});
+
+// Fonctions d'initialisation
+function initializeApp() {
+    showPage('homePage');
+}
+
 function setupEventListeners() {
-    // Gestionnaires d'événements pour la page d'accueil
-    document.getElementById('startSurah').addEventListener('change', updateVerseCount);
-    document.getElementById('endSurah').addEventListener('change', updateVerseCount);
-    document.getElementById('startVerse').addEventListener('input', validateVerseInputs);
-    document.getElementById('endVerse').addEventListener('input', validateVerseInputs);
-    document.getElementById('startQuiz').addEventListener('click', startQuiz);
-    document.getElementById('endSurah').addEventListener('change', event => {
-    onSurahChange(event);    // ajuste le numéro par défaut
-    updateVerseCount();      // recalcule ensuite le nombre total d’ayat
- }); 
-   
-    // Sélection du mode de quiz
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectQuizMode(btn.dataset.mode));
+    // 1) Filtres de sourates et versets déclenchent désormais filtersChanged
+    document.getElementById('startSurah').addEventListener('change', e => {
+        filtersChanged = true;
+        onSurahChange(e);
+        updateVerseCount();
     });
-    
-    // Gestionnaires pour la page de quiz
+    document.getElementById('endSurah').addEventListener('change', e => {
+        filtersChanged = true;
+        onSurahChange(e);
+        updateVerseCount();
+    });
+    document.getElementById('startVerse').addEventListener('input', () => {
+        filtersChanged = true;
+        validateVerseInputs();
+    });
+    document.getElementById('endVerse').addEventListener('input', () => {
+        filtersChanged = true;
+        validateVerseInputs();
+    });
+
+    // 2) Nombre de questions
+    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            filtersChanged = true;
+        });
+    });
+
+    // 3) Inclusion des pages
+    document.getElementById('includePages').addEventListener('change', () => {
+        filtersChanged = true;
+    });
+
+    // 4) Sélection du mode de quiz
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            filtersChanged = true;
+            selectQuizMode(btn.dataset.mode);
+        });
+    });
+
+    // 5) Démarrage du quiz
+    document.getElementById('startQuiz').addEventListener('click', startQuiz);
+
+    // 6) Navigation pendant le quiz
     document.getElementById('homeBtn').addEventListener('click', () => showPage('homePage'));
     document.getElementById('confirmAnswer').addEventListener('click', confirmAnswer);
     document.getElementById('nextStep').addEventListener('click', nextStep);
-    
-    // Gestionnaires pour la page de résultats
+
+    // 7) Navigation des résultats
     document.getElementById('newQuiz').addEventListener('click', () => showPage('homePage'));
     document.getElementById('backToHome').addEventListener('click', () => showPage('homePage'));
-    
-    // Gestion de la visibilité de la page pour le timer
+
+    // 8) Gestion du timer et du Wake Lock
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleVisibilityChange);
     window.addEventListener('focus', handleVisibilityChange);
@@ -14348,7 +14467,7 @@ function displayMode1Question() {
                 <strong>سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></strong>
 
             </div>
-            <div style="color: #666;">اختر النص الصحيح لهذه الآية:</div>
+            <div class="question-blink" style="color: #666;">اختر النص الصحيح لهذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14383,7 +14502,7 @@ function displayMode2Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div style="color: #666;">اختر رقم الآية الصحيح:</div>
+            <div class="question-blink" style="color: #666;">اختر رقم الآية الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14397,7 +14516,7 @@ function displayMode2Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">رقم الآية: <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div style="color: #666;">اختر اسم السورة الصحيح:</div>
+            <div class="question-blink" style="color: #666;">اختر اسم السورة الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14411,7 +14530,7 @@ function displayMode2Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div style="color: #666;">اختر رقم الصفحة الصحيح:</div>
+            <div class="question-blink" style="color: #666;">اختر رقم الصفحة الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14433,7 +14552,7 @@ function displayMode3Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div style="color: #666;">اختر الآية التي تسبق هذه الآية:</div>
+            <div class="question-blink" style="color: #666;">اختر الآية التي تسبق هذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14454,7 +14573,7 @@ function displayMode3Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div style="color: #666;">اختر الآية التي تتبع هذه الآية:</div>
+            <div class="question-blink" style="color: #666;">اختر الآية التي تتبع هذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
