@@ -13982,45 +13982,40 @@ window.addEventListener('pageshow', function() {
 });
 
 
-function tryRestoreQuiz() {
-  const saved = localStorage.getItem('quranQuizState');
-  if (!saved) return false;
+// Flag pour savoir si l'initialisation a déjà eu lieu
+let isAppInitialized = false;
 
-  const state = JSON.parse(saved);
-  // Récupérer l'état
-  quizConfig          = state.quizConfig;
-  currentQuestion     = state.currentQuestion;
-  score               = state.score;
-  quizHistory         = state.quizHistory;
-  usedQuestions       = new Set(state.usedQuestions);
-  selectedMode        = state.selectedMode;
-  currentQuestionData = state.currentQuestionData;
-  if (state.timer.startTime) {
-    timer.startTime   = new Date(state.timer.startTime);
-    timer.totalPaused = state.timer.totalPaused;
+// Au chargement initial
+document.addEventListener('DOMContentLoaded', function() {
+  populateSurahSelects();
+  updateVerseCount();
+  setupEventListeners();
+
+  // Si un quiz était en cours, on restaure
+  if (tryRestoreQuiz()) {
+    isAppInitialized = true;
+    return;
   }
 
-  // Préremplir les filtres
-  populateSurahSelects();
-  document.getElementById('startSurah').value = quizConfig.startSurah;
-  document.getElementById('endSurah').value   = quizConfig.endSurah;
-  document.getElementById('startVerse').value = quizConfig.startVerse;
-  document.getElementById('endVerse').value   = quizConfig.endVerse;
-  updateVerseCount();
+  // Sinon initialisation normale
+  initializeApp();
+  isAppInitialized = true;
 
-  // Afficher le quiz
-  showPage('quizPage');
-  updateQuizInterface();
-  displayCurrentQuestion();
-  startTimer();
+  // Enregistrement du Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('SW enregistré'))
+      .catch(err => console.log('Erreur SW:', err));
+  }
+});
 
-  return true;
-}
-
-// Fonctions d'initialisation
-function initializeApp() {
-    showPage('homePage');
-}
+// À chaque retour en avant-plan
+window.addEventListener('pageshow', function() {
+  // Ne restaurer que si l'app a déjà été initialisée et qu'un quiz était en cours
+  if (isAppInitialized) {
+    tryRestoreQuiz();
+  }
+});
 
 
 // Bloquer le rechargement ou la fermeture pendant le quiz en cours
