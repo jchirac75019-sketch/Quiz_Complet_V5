@@ -13955,54 +13955,68 @@ let timer = {
 };
 let wakeLock = null;
 
-// Initialisation de l'application avec restauration d'état
+// Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Préparer l'accueil
+    // Peupler les filtres et lier les écouteurs
     populateSurahSelects();
     updateVerseCount();
     setupEventListeners();
 
-    // 2. Tenter la restauration de l'état si l'utilisateur n'a pas modifié les filtres
-    const saved = localStorage.getItem('quranQuizState');
-    if (saved) {
-        const state = JSON.parse(saved);
-        // Récupérer l'état
-        quizConfig          = state.quizConfig;
-        currentQuestion     = state.currentQuestion;
-        score               = state.score;
-        quizHistory         = state.quizHistory;
-        usedQuestions       = new Set(state.usedQuestions);
-        selectedMode        = state.selectedMode;
-        currentQuestionData = state.currentQuestionData;
-        if (state.timer.startTime) {
-            timer.startTime   = new Date(state.timer.startTime);
-            timer.totalPaused = state.timer.totalPaused;
-        }
-        // Remettre les filtres selon quizConfig
-        populateSurahSelects();
-        document.getElementById('startSurah').value = quizConfig.startSurah;
-        document.getElementById('endSurah').value   = quizConfig.endSurah;
-        document.getElementById('startVerse').value = quizConfig.startVerse;
-        document.getElementById('endVerse').value   = quizConfig.endVerse;
-        updateVerseCount();
-        // Passer au quiz
-        showPage('quizPage');
-        updateQuizInterface();
-        displayCurrentQuestion();
-        startTimer();
-        return;
-    }
+    // Essayer de restaurer si un état existe
+    if (tryRestoreQuiz()) return;
 
-    // 3. Sinon, initialisation normale
+    // Sinon, page d'accueil normale
     initializeApp();
 
-    // 4. Enregistrer le Service Worker pour PWA
+    // Enregistrer le Service Worker
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker enregistré'))
-            .catch(err => console.log('Erreur Service Worker:', err));
+            .then(() => console.log('SW enregistré'))
+            .catch(err => console.log('Erreur SW:', err));
     }
 });
+
+// À chaque retour de visibilité (y compris bfcache), relancer la restauration
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        tryRestoreQuiz();
+    }
+});
+
+function tryRestoreQuiz() {
+  const saved = localStorage.getItem('quranQuizState');
+  if (!saved) return false;
+
+  const state = JSON.parse(saved);
+  // Récupérer l'état
+  quizConfig          = state.quizConfig;
+  currentQuestion     = state.currentQuestion;
+  score               = state.score;
+  quizHistory         = state.quizHistory;
+  usedQuestions       = new Set(state.usedQuestions);
+  selectedMode        = state.selectedMode;
+  currentQuestionData = state.currentQuestionData;
+  if (state.timer.startTime) {
+    timer.startTime   = new Date(state.timer.startTime);
+    timer.totalPaused = state.timer.totalPaused;
+  }
+
+  // Préremplir les filtres
+  populateSurahSelects();
+  document.getElementById('startSurah').value = quizConfig.startSurah;
+  document.getElementById('endSurah').value   = quizConfig.endSurah;
+  document.getElementById('startVerse').value = quizConfig.startVerse;
+  document.getElementById('endVerse').value   = quizConfig.endVerse;
+  updateVerseCount();
+
+  // Afficher le quiz
+  showPage('quizPage');
+  updateQuizInterface();
+  displayCurrentQuestion();
+  startTimer();
+
+  return true;
+}
 
 // Fonctions d'initialisation
 function initializeApp() {
