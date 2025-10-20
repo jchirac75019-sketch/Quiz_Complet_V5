@@ -13976,6 +13976,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function saveQuizState() {
+  const state = {
+    quizConfig,
+    currentQuestion,
+    score,
+    quizHistory,
+    usedQuestions: Array.from(usedQuestions),
+    selectedMode,
+    currentQuestionData,
+    timer: {
+      startTime: timer.startTime?.toISOString() || null,
+      totalPaused: timer.totalPaused
+    }
+  };
+  localStorage.setItem('quranQuizState', JSON.stringify(state));
+}
+
 // À chaque retour de visibilité (y compris bfcache), relancer la restauration
 window.addEventListener('pageshow', function() {
     tryRestoreQuiz();
@@ -14057,6 +14074,7 @@ function setupEventListeners() {
         filtersChanged = true;
         onSurahChange(e);
         updateVerseCount();
+        saveQuizState();  // <— Sauvegarde l’état après modification
     });
     document.getElementById('endSurah').addEventListener('change', e => {
         filtersChanged = true;
