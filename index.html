@@ -13977,11 +13977,10 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // À chaque retour de visibilité (y compris bfcache), relancer la restauration
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        tryRestoreQuiz();
-    }
+window.addEventListener('pageshow', function() {
+    tryRestoreQuiz();
 });
+
 
 function tryRestoreQuiz() {
   const saved = localStorage.getItem('quranQuizState');
