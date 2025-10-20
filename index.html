@@ -505,6 +505,15 @@ body {
 
 .quiz-header .score-display {
     display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    padding: 0;
+    margin-bottom: 0;
+    flex-wrap: nowrap;  /* AJOUTER cette ligne */
+}
+
+.quiz-header .score-display {
+    display: flex;
     gap: var(--spacing-lg);
     align-items: center;
 }
@@ -891,11 +900,28 @@ body {
         justify-content: center;
     }
     
-    .score-display {
+/* À SUPPRIMER ou COMMENTER (J'ai commenté cette ligne car je veux que les 2 compteurs soient sur la même ligne)
+    /* .score-display {
         flex-direction: column;
         align-items: center;
+    } */
+    
+@media (max-width: 768px) {
+    .quiz-header .score-item {
+        padding: 0.15rem 0.3rem;    /* Padding réduit */
+        font-size: 0.75rem;         /* Police plus petite */
+        white-space: nowrap;        /* Évite le retour à la ligne du texte */
     }
     
+    .quiz-header .score-label {
+        font-size: 0.7rem;          /* Label encore plus petit */
+    }
+    
+    .quiz-header .score-display {
+        gap: 0.25rem;               /* Écart minimal entre les deux compteurs */
+    }
+}
+
     .summary-stats {
         grid-template-columns: 1fr;
     }
