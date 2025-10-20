@@ -13964,7 +13964,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 2. Tenter la restauration de l'état si l'utilisateur n'a pas modifié les filtres
     const saved = localStorage.getItem('quranQuizState');
-    if (saved && !filtersChanged) {
+    if (saved) {
         const state = JSON.parse(saved);
         // Récupérer l'état
         quizConfig          = state.quizConfig;
