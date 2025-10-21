@@ -143,12 +143,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Désactive le pull-to-refresh et le débordement vertical à la racine */
-html, body {
-  overscroll-behavior-y: none;   /* Empêche l’effet de rebond et le pull-to-refresh */
-  overscroll-behavior-x: none;
-}
-
 /* Container and Layout */
 .container {
     max-width: 1200px;
@@ -13957,110 +13951,17 @@ let wakeLock = null;
 
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // Peupler les filtres et lier les écouteurs
+    // initializeApp();   // <-- Mettez en commentaire ou supprimez cette ligne
+    setupEventListeners();
     populateSurahSelects();
     updateVerseCount();
-    setupEventListeners();
 
-    // Essayer de restaurer si un état existe
-    if (tryRestoreQuiz()) return;
-
-    // Sinon, page d'accueil normale
-    initializeApp();
-
-    // Enregistrer le Service Worker
+    // Enregistrer le Service Worker pour PWA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('SW enregistré'))
-            .catch(err => console.log('Erreur SW:', err));
+            .then(registration => console.log('Service Worker enregistré'))
+            .catch(error => console.log('Erreur Service Worker:', error));
     }
-});
-
-function saveQuizState() {
-  const state = {
-    quizConfig,
-    currentQuestion,
-    score,
-    quizHistory,
-    usedQuestions: Array.from(usedQuestions),
-    selectedMode,
-    currentQuestionData,
-    timer: {
-      startTime: timer.startTime?.toISOString() || null,
-      totalPaused: timer.totalPaused
-    }
-  };
-  localStorage.setItem('quranQuizState', JSON.stringify(state));
-}
-
-// À chaque retour de visibilité (y compris bfcache), relancer la restauration
-window.addEventListener('pageshow', function() {
-    tryRestoreQuiz();
-});
-
-
-// Flag pour savoir si l'initialisation a déjà eu lieu
-let isAppInitialized = false;
-
-// Au chargement initial
-document.addEventListener('DOMContentLoaded', function() {
-  populateSurahSelects();
-  updateVerseCount();
-  setupEventListeners();
-
-  // Si un quiz était en cours, on restaure
-  if (tryRestoreQuiz()) {
-    isAppInitialized = true;
-    return;
-  }
-
-  // Sinon initialisation normale
-  initializeApp();
-  isAppInitialized = true;
-
-  // Enregistrement du Service Worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log('SW enregistré'))
-      .catch(err => console.log('Erreur SW:', err));
-  }
-});
-
-// À chaque retour en avant-plan
-window.addEventListener('pageshow', function() {
-  // Ne restaurer que si l'app a déjà été initialisée et qu'un quiz était en cours
-  if (isAppInitialized) {
-    tryRestoreQuiz();
-  }
-});
-
-
-// Bloquer le rechargement ou la fermeture pendant le quiz en cours
-window.addEventListener('beforeunload', function(e) {
-    if (document.getElementById('quizPage').classList.contains('active') && !quizFinished) {
-        e.preventDefault();
-        e.returnValue = '';
-    }
-});
-
-// Empêcher la navigation arrière/avant dans l’historique PWA
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', function() {
-    history.pushState(null, null, location.href);
-    if (document.getElementById('quizPage').classList.contains('active')) {
-        showPage('quizPage');
-    }
-});
-
-// Réacquérir le Wake Lock si perdu
-document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && !wakeLock) requestWakeLock();
-});
-window.addEventListener('focus', () => {
-    if (!wakeLock) requestWakeLock();
-});
-window.addEventListener('blur', () => {
-    if (!wakeLock) requestWakeLock();
 });
 
 // Fonctions d'initialisation
@@ -14069,60 +13970,32 @@ function initializeApp() {
 }
 
 function setupEventListeners() {
-    // 1) Filtres de sourates et versets déclenchent désormais filtersChanged
-    document.getElementById('startSurah').addEventListener('change', e => {
-        filtersChanged = true;
-        onSurahChange(e);
-        updateVerseCount();
-        saveQuizState();  // <— Sauvegarde l’état après modification
-    });
-    document.getElementById('endSurah').addEventListener('change', e => {
-        filtersChanged = true;
-        onSurahChange(e);
-        updateVerseCount();
-    });
-    document.getElementById('startVerse').addEventListener('input', () => {
-        filtersChanged = true;
-        validateVerseInputs();
-    });
-    document.getElementById('endVerse').addEventListener('input', () => {
-        filtersChanged = true;
-        validateVerseInputs();
-    });
-
-    // 2) Nombre de questions
-    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            filtersChanged = true;
-        });
-    });
-
-    // 3) Inclusion des pages
-    document.getElementById('includePages').addEventListener('change', () => {
-        filtersChanged = true;
-    });
-
-    // 4) Sélection du mode de quiz
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            filtersChanged = true;
-            selectQuizMode(btn.dataset.mode);
-        });
-    });
-
-    // 5) Démarrage du quiz
+    // Gestionnaires d'événements pour la page d'accueil
+    document.getElementById('startSurah').addEventListener('change', updateVerseCount);
+    document.getElementById('endSurah').addEventListener('change', updateVerseCount);
+    document.getElementById('startVerse').addEventListener('input', validateVerseInputs);
+    document.getElementById('endVerse').addEventListener('input', validateVerseInputs);
     document.getElementById('startQuiz').addEventListener('click', startQuiz);
-
-    // 6) Navigation pendant le quiz
+    document.getElementById('endSurah').addEventListener('change', event => {
+    onSurahChange(event);    // ajuste le numéro par défaut
+    updateVerseCount();      // recalcule ensuite le nombre total d’ayat
+ }); 
+   
+    // Sélection du mode de quiz
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => selectQuizMode(btn.dataset.mode));
+    });
+    
+    // Gestionnaires pour la page de quiz
     document.getElementById('homeBtn').addEventListener('click', () => showPage('homePage'));
     document.getElementById('confirmAnswer').addEventListener('click', confirmAnswer);
     document.getElementById('nextStep').addEventListener('click', nextStep);
-
-    // 7) Navigation des résultats
+    
+    // Gestionnaires pour la page de résultats
     document.getElementById('newQuiz').addEventListener('click', () => showPage('homePage'));
     document.getElementById('backToHome').addEventListener('click', () => showPage('homePage'));
-
-    // 8) Gestion du timer et du Wake Lock
+    
+    // Gestion de la visibilité de la page pour le timer
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('blur', handleVisibilityChange);
     window.addEventListener('focus', handleVisibilityChange);
