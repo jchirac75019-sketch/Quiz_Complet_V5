@@ -13974,28 +13974,50 @@ function initializeApp() {
 }
 
 function setupEventListeners() {
-    // Gestionnaires d'événements pour la page d'accueil
+    // Sélection des sourates - avec sauvegarde
     document.getElementById('startSurah').addEventListener('change', event => {
-        // Sauvegarder dans localStorage
         localStorage.setItem('savedStartSurah', event.target.value);
         onSurahChange(event);
         updateVerseCount();
     });
     
     document.getElementById('endSurah').addEventListener('change', event => {
-        // Sauvegarder dans localStorage
         localStorage.setItem('savedEndSurah', event.target.value);
         onSurahChange(event);
         updateVerseCount();
     });
     
-    document.getElementById('startVerse').addEventListener('input', validateVerseInputs);
-    document.getElementById('endVerse').addEventListener('input', validateVerseInputs);
+    // Sélection des versets - avec sauvegarde
+    document.getElementById('startVerse').addEventListener('input', event => {
+        localStorage.setItem('savedStartVerse', event.target.value);
+        validateVerseInputs();
+    });
+    
+    document.getElementById('endVerse').addEventListener('input', event => {
+        localStorage.setItem('savedEndVerse', event.target.value);
+        validateVerseInputs();
+    });
+    
+    // Nombre de questions - avec sauvegarde
+    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
+        radio.addEventListener('change', event => {
+            localStorage.setItem('savedQuestionCount', event.target.value);
+        });
+    });
+    
+    // Option "inclure les pages" - avec sauvegarde
+    document.getElementById('includePages').addEventListener('change', event => {
+        localStorage.setItem('savedIncludePages', event.target.checked ? 'true' : 'false');
+    });
+    
     document.getElementById('startQuiz').addEventListener('click', startQuiz);
    
-    // Sélection du mode de quiz
+    // Sélection du mode de quiz - avec sauvegarde
     document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectQuizMode(btn.dataset.mode));
+        btn.addEventListener('click', () => {
+            localStorage.setItem('savedMode', btn.dataset.mode);
+            selectQuizMode(btn.dataset.mode);
+        });
     });
     
     // Gestionnaires pour la page de quiz
@@ -14017,11 +14039,16 @@ function populateSurahSelects() {
     const startSelect = document.getElementById('startSurah');
     const endSelect = document.getElementById('endSurah');
     
-    // Récupérer les valeurs sauvegardées dans localStorage (ou valeurs par défaut)
+    // Récupérer les valeurs sauvegardées
     const savedStartSurah = localStorage.getItem('savedStartSurah') || '1';
     const savedEndSurah = localStorage.getItem('savedEndSurah') || '114';
+    const savedStartVerse = localStorage.getItem('savedStartVerse') || '1';
+    const savedEndVerse = localStorage.getItem('savedEndVerse') || '7';
+    const savedQuestionCount = localStorage.getItem('savedQuestionCount') || '5';
+    const savedIncludePages = localStorage.getItem('savedIncludePages') === 'true';
+    const savedMode = localStorage.getItem('savedMode');
     
-    // Vider les sélecteurs
+    // Vider les sélecteurs de sourates
     startSelect.innerHTML = '';
     endSelect.innerHTML = '';
     
@@ -14038,9 +14065,30 @@ function populateSurahSelects() {
         endSelect.appendChild(option2);
     });
     
-    // Restaurer les valeurs sauvegardées
+    // Restaurer les valeurs sauvegardées des sourates
     startSelect.value = savedStartSurah;
     endSelect.value = savedEndSurah;
+    
+    // Restaurer les valeurs sauvegardées des versets
+    document.getElementById('startVerse').value = savedStartVerse;
+    document.getElementById('endVerse').value = savedEndVerse;
+    
+    // Restaurer le nombre de questions
+    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
+        radio.checked = radio.value === savedQuestionCount;
+    });
+    
+    // Restaurer l'option "inclure les pages"
+    document.getElementById('includePages').checked = savedIncludePages;
+    
+    // Restaurer le mode sélectionné
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        if (btn.dataset.mode === savedMode) {
+            btn.classList.add('selected');
+        } else {
+            btn.classList.remove('selected');
+        }
+    });
 }
 
 
