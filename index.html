@@ -13951,9 +13951,13 @@ let wakeLock = null;
 
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // initializeApp();   // <-- Mettez en commentaire ou supprimez cette ligne
-    setupEventListeners();
+    // Toujours peupler les sélecteurs (nécessaire pour afficher les sourates)
     populateSurahSelects();
+    
+    // Toujours attacher les écouteurs
+    setupEventListeners();
+    
+    // Calculer le nombre de versets SANS déclencher de changement visible
     updateVerseCount();
 
     // Enregistrer le Service Worker pour PWA
@@ -14005,6 +14009,10 @@ function populateSurahSelects() {
     const startSelect = document.getElementById('startSurah');
     const endSelect = document.getElementById('endSurah');
     
+    // Sauvegarder les valeurs actuelles AVANT de vider
+    const currentStartValue = startSelect.value || '1';
+    const currentEndValue = endSelect.value || '114';
+    
     // Vider les sélecteurs
     startSelect.innerHTML = '';
     endSelect.innerHTML = '';
@@ -14022,9 +14030,9 @@ function populateSurahSelects() {
         endSelect.appendChild(option2);
     });
     
-    // Valeurs par défaut : première et dernière sourate
-    startSelect.value = 1;
-    endSelect.value = 114;
+    // RESTAURER les valeurs précédentes (évite la réinitialisation visuelle)
+    startSelect.value = currentStartValue;
+    endSelect.value = currentEndValue;
 }
 
 function onSurahChange(event) {
