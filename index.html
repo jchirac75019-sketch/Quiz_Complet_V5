@@ -665,6 +665,10 @@ body {
     font-weight: 600;
 }
 
+#stepIndicator {
+    font-size: 0.85rem !important;
+}
+
 .highlight-blue {
     color: #2196F3;        /* Bleu vif */
     font-weight: 700;      /* Gras pour renforcer la visibilité */
@@ -673,17 +677,19 @@ body {
 .question-blink {
     color: #dc3545 !important;  /* Rouge */
     font-weight: 600;
-    animation: blink-red 0.5s ease-in-out 3;  /* 3 répétitions de 0.5s chacune */
+    animation: blink-red 0.8s ease-in-out 3;  /* 3 répétitions de 0.8s chacune (plus lent) */
 }
 
 @keyframes blink-red {
     0%, 100% { 
         opacity: 1; 
-        color: #dc3545; 
+        color: #dc3545;
+        font-size: 1em;  /* Taille normale */
     }
     50% { 
         opacity: 0.3; 
-        color: #ff6b7a; 
+        color: #ff6b7a;
+        font-size: 1.15em;  /* Augmente de 15% quand elle clignote */
     }
 }
 
