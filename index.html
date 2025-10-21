@@ -13958,6 +13958,9 @@ document.addEventListener('DOMContentLoaded', function() {
     populateSurahSelects();
     setupEventListeners();
     updateVerseCount();
+    
+    // ✅ Appeler preventRefreshDuringQuiz() APRÈS setupEventListeners()
+    preventRefreshDuringQuiz();
 
     // Enregistrer le Service Worker pour PWA
     if ('serviceWorker' in navigator) {
@@ -13966,6 +13969,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.log('Erreur Service Worker:', error));
     }
 });
+
 
 // Fonctions d'initialisation
 function initializeApp() {
@@ -13999,7 +14003,7 @@ function preventRefreshDuringQuiz() {
 
 function setupEventListeners() {
      // ✅ Appeler la fonction de blocage des rafraîchissements
-        preventRefreshDuringQuiz();
+        // preventRefreshDuringQuiz();
     // Sélection des sourates - avec sauvegarde
     document.getElementById('startSurah').addEventListener('change', event => {
         localStorage.setItem('savedStartSurah', event.target.value);
