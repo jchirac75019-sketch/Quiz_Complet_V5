@@ -14263,9 +14263,13 @@ function restoreQuizState() {
     updateQuizInterface();
     updateScoreDisplay();
     
-    // ✅ Appeler generateNextQuestion() NORMALEMENT
-    // (currentQuestion est déjà au bon nombre, generateNextQuestion() va l'incrémenter)
-    generateNextQuestion();
+    // ✅ Si currentQuestion est 0, générer la première question
+    if (currentQuestion === 0) {
+        generateNextQuestion();
+    } else {
+        // ✅ Sinon, afficher la question restaurée SANS l'incrémenter
+        displayCurrentQuestionWithoutIncrement();
+    }
     
     startTimer();
 }
@@ -14387,7 +14391,7 @@ function handleVisibilityChange() {
 function generateNextQuestion() {
     currentStep = 0;
     
-    console.log('DEBUG generateNextQuestion:', {
+    console.log('DEBUG generateNextQuestion START:', {
         currentQuestion,
         questionCount: quizConfig.questionCount,
         comparison: currentQuestion >= parseInt(quizConfig.questionCount)
@@ -14402,7 +14406,7 @@ function generateNextQuestion() {
     }
     
     currentQuestion++;
-    console.log('Nouvelle question:', currentQuestion);
+    console.log('DEBUG generateNextQuestion - currentQuestion INCRÉMENTÉ à:', currentQuestion); // ✅ LOG
     
     // Déterminer le mode pour cette question
     let questionMode = quizConfig.mode;
@@ -14424,8 +14428,9 @@ function generateNextQuestion() {
     }
     
     updateQuizInterface();
+    console.log('DEBUG generateNextQuestion END - currentQuestion final:', currentQuestion); // ✅ LOG
+    saveQuizState(); // ✅ SAUVEGARDE à la fin
 }
-
 
 function generateMode1Question() {
     // Mode 1: Numéro de verset + nom de sourate → trouver le texte
@@ -14814,7 +14819,7 @@ function confirmAnswer() {
     updateScoreDisplay();
     saveQuizState();
     
-    console.log('DEBUG confirmAnswer - currentQuestion avant generateNextQuestion:', currentQuestion); // ✅ LOG
+    console.log('DEBUG confirmAnswer - currentQuestion AVANT setTimeout:', currentQuestion); // ✅ LOG 1
     
     // Masquer le bouton de confirmation et afficher le bouton suivant
     document.getElementById('confirmAnswer').style.display = 'none';
@@ -14824,12 +14829,13 @@ function confirmAnswer() {
     } else {
         // Question terminée
         setTimeout(() => {
-            console.log('DEBUG confirmAnswer - setTimeout appel generateNextQuestion'); // ✅ LOG
+            console.log('DEBUG confirmAnswer - AVANT generateNextQuestion, currentQuestion:', currentQuestion); // ✅ LOG 2
             generateNextQuestion();
+            console.log('DEBUG confirmAnswer - APRÈS generateNextQuestion, currentQuestion:', currentQuestion); // ✅ LOG 3
+            saveQuizState(); // ✅ SAUVEGARDE ENCORE UNE FOIS après
         }, 2000);
     }
 }
-
 
 function nextStep() {
     currentQuestionData.currentStep++;
