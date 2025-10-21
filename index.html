@@ -13951,13 +13951,12 @@ let wakeLock = null;
 
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // Toujours peupler les sélecteurs (nécessaire pour afficher les sourates)
+    // Tenter de restaurer un quiz en cours
+    restoreQuizState();
+    
+    // Toujours peupler les filtres et attacher les écouteurs
     populateSurahSelects();
-    
-    // Toujours attacher les écouteurs
     setupEventListeners();
-    
-    // Calculer le nombre de versets SANS déclencher de changement visible
     updateVerseCount();
 
     // Enregistrer le Service Worker pour PWA
@@ -13973,7 +13972,34 @@ function initializeApp() {
     showPage('homePage');
 }
 
+function preventRefreshDuringQuiz() {
+    // Empêcher F5 et Ctrl+R pendant le quiz
+    document.addEventListener('keydown', event => {
+        // Si quiz en cours et touches F5 ou Ctrl+R
+        if (currentQuestion > 0) {
+            if (event.key === 'F5' || (event.ctrlKey && event.key === 'r') || (event.metaKey && event.key === 'r')) {
+                event.preventDefault();
+                console.log('Rafraîchissement bloqué pendant le quiz');
+                return false;
+            }
+        }
+    });
+    
+    // Empêcher le pull-to-refresh sur mobile
+    document.addEventListener('touchmove', event => {
+        if (currentQuestion > 0 && event.touches.length > 0) {
+            const touch = event.touches[0];
+            // Bloquer uniquement si on tire vers le bas depuis le haut
+            if (touch.clientY > 0 && document.documentElement.scrollTop === 0) {
+                event.preventDefault();
+            }
+        }
+    }, { passive: false });
+}
+
 function setupEventListeners() {
+     // ✅ Appeler la fonction de blocage des rafraîchissements
+        preventRefreshDuringQuiz();
     // Sélection des sourates - avec sauvegarde
     document.getElementById('startSurah').addEventListener('change', event => {
         localStorage.setItem('savedStartSurah', event.target.value);
@@ -14224,6 +14250,59 @@ function startQuiz() {
     showPage('quizPage');
     updateQuizInterface();
     generateNextQuestion();
+    
+    // Sauvegarder l'état du quiz
+    saveQuizState();
+}
+
+function restoreQuizState() {
+    const saved = localStorage.getItem('quranQuizState');
+    
+    if (!saved) {
+        // Aucun quiz sauvegardé, afficher l'accueil normal
+        showPage('homePage');
+        return;
+    }
+    
+    const state = JSON.parse(saved);
+    
+    // Restaurer toutes les variables
+    quizConfig = state.quizConfig;
+    currentQuestion = state.currentQuestion;
+    score = state.score;
+    quizHistory = state.quizHistory;
+    usedQuestions = new Set(state.usedQuestions);
+    selectedMode = state.selectedMode;
+    currentQuestionData = state.currentQuestionData;
+    
+    if (state.timer.startTime) {
+        timer.startTime = new Date(state.timer.startTime);
+        timer.totalPaused = state.timer.totalPaused;
+    }
+    
+    console.log('État du quiz restauré');
+    
+    // Afficher la page de quiz
+    showPage('quizPage');
+    updateQuizInterface();
+    updateScoreDisplay();
+    displayCurrentQuestion();
+    startTimer();
+}
+
+function displayCurrentQuestion() {
+    // Afficher la question actuelle selon le mode
+    switch (currentQuestionData.mode) {
+        case 1:
+            displayMode1Question();
+            break;
+        case 2:
+            displayMode2Question();
+            break;
+        case 3:
+            displayMode3Question();
+            break;
+    }
 }
 
 async function requestWakeLock() {
@@ -14243,6 +14322,28 @@ function releaseWakeLock() {
         wakeLock = null;
         console.log('Wake Lock désactivé');
     }
+}
+
+function saveQuizState() {
+    // Ne sauvegarder que si un quiz est réellement en cours
+    if (currentQuestion === 0) return;
+    
+    const state = {
+        quizConfig,
+        currentQuestion,
+        score,
+        quizHistory,
+        usedQuestions: Array.from(usedQuestions),
+        selectedMode,
+        currentQuestionData,
+        timer: {
+            startTime: timer.startTime?.toISOString() || null,
+            totalPaused: timer.totalPaused
+        }
+    };
+    
+    localStorage.setItem('quranQuizState', JSON.stringify(state));
+    console.log('État du quiz sauvegardé');
 }
 
 function startTimer() {
@@ -14701,6 +14802,23 @@ function confirmAnswer() {
         score.correct++;
     } else {
         score.incorrect++;
+    }
+    
+    updateScoreDisplay();
+    
+    // ✅ SAUVEGARDER L'ÉTAT APRÈS CHAQUE RÉPONSE
+    saveQuizState();
+    
+    // Masquer le bouton de confirmation et afficher le bouton suivant
+    document.getElementById('confirmAnswer').style.display = 'none';
+    
+    if (currentQuestionData.currentStep < currentQuestionData.steps) {
+        document.getElementById('nextStep').style.display = 'block';
+    } else {
+        // Question terminée
+        setTimeout(() => {
+            generateNextQuestion();
+        }, 2000);
     }
     
     updateScoreDisplay();
