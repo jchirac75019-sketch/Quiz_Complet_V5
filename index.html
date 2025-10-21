@@ -13914,15 +13914,22 @@ let wakeLock = null;
 
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // Tenter de restaurer un quiz en cours
-    restoreQuizState();
-    
-    // Toujours peupler les filtres et attacher les écouteurs
+    // Toujours peupler les filtres et attacher les écouteurs EN PREMIER
     populateSurahSelects();
     setupEventListeners();
     updateVerseCount();
     
-    // ✅ Appeler preventRefreshDuringQuiz() APRÈS setupEventListeners()
+    // Ensuite, vérifier s'il y a un quiz à restaurer
+    const saved = localStorage.getItem('quranQuizState');
+    if (saved) {
+        const state = JSON.parse(saved);
+        // Ne restaurer que si currentQuestion > 0 (quiz vraiment en cours)
+        if (state.currentQuestion > 0) {
+            restoreQuizState();
+        }
+    }
+    
+    // ✅ Appeler preventRefreshDuringQuiz()
     preventRefreshDuringQuiz();
 
     // Enregistrer le Service Worker pour PWA
@@ -14226,9 +14233,7 @@ function restoreQuizState() {
     const saved = localStorage.getItem('quranQuizState');
     
     if (!saved) {
-        // Aucun quiz sauvegardé, afficher l'accueil normal
-        showPage('homePage');
-        return;
+        return; // Sortir silencieusement, ne pas afficher l'accueil
     }
     
     const state = JSON.parse(saved);
