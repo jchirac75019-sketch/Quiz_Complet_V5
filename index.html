@@ -13972,8 +13972,6 @@ function preventRefreshDuringQuiz() {
 }
 
 function setupEventListeners() {
-     // ✅ Appeler la fonction de blocage des rafraîchissements
-        // preventRefreshDuringQuiz();
     // Sélection des sourates - avec sauvegarde
     document.getElementById('startSurah').addEventListener('change', event => {
         localStorage.setItem('savedStartSurah', event.target.value);
@@ -14025,9 +14023,9 @@ function setupEventListeners() {
     document.getElementById('confirmAnswer').addEventListener('click', confirmAnswer);
     document.getElementById('nextStep').addEventListener('click', nextStep);
     
-    // Gestionnaires pour la page de résultats
-    document.getElementById('newQuiz').addEventListener('click', () => showPage('homePage'));
-    document.getElementById('backToHome').addEventListener('click', () => showPage('homePage'));
+    // ✅ Gestionnaires pour la page de résultats - MODIFIÉS
+    document.getElementById('newQuiz').addEventListener('click', startNewQuizWithSameSettings);
+    document.getElementById('backToHome').addEventListener('click', resetAndGoHome);
     
     // Gestion de la visibilité de la page pour le timer
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -14233,7 +14231,7 @@ function restoreQuizState() {
     const saved = localStorage.getItem('quranQuizState');
     
     if (!saved) {
-        return; // Sortir silencieusement, ne pas afficher l'accueil
+        return;
     }
     
     const state = JSON.parse(saved);
@@ -14252,18 +14250,41 @@ function restoreQuizState() {
         timer.totalPaused = state.timer.totalPaused;
     }
     
-    console.log('État du quiz restauré');
+    console.log('État du quiz restauré - currentQuestion:', currentQuestion);
     
     // Afficher la page de quiz
     showPage('quizPage');
     updateQuizInterface();
     updateScoreDisplay();
-    displayCurrentQuestion();
+    
+    // ✅ Appeler generateNextQuestion() NORMALEMENT
+    // (currentQuestion est déjà au bon nombre, generateNextQuestion() va l'incrémenter)
+    generateNextQuestion();
+    
     startTimer();
 }
 
 function displayCurrentQuestion() {
     // Afficher la question actuelle selon le mode
+    switch (currentQuestionData.mode) {
+        case 1:
+            displayMode1Question();
+            break;
+        case 2:
+            displayMode2Question();
+            break;
+        case 3:
+            displayMode3Question();
+            break;
+    }
+}
+
+function displayCurrentQuestionWithoutIncrement() {
+    // Afficher la question actuelle SANS l'incrémenter
+    // Réinitialiser les boutons d'options
+    document.getElementById('confirmAnswer').style.display = 'block';
+    document.getElementById('nextStep').style.display = 'none';
+    
     switch (currentQuestionData.mode) {
         case 1:
             displayMode1Question();
@@ -14360,19 +14381,26 @@ function handleVisibilityChange() {
 function generateNextQuestion() {
     currentStep = 0;
     
+    console.log('DEBUG generateNextQuestion:', {
+        currentQuestion,
+        questionCount: quizConfig.questionCount,
+        comparison: currentQuestion >= parseInt(quizConfig.questionCount)
+    });
+    
     // Vérifier si le quiz est terminé
     if (quizConfig.questionCount !== 'infinite' && 
         currentQuestion >= parseInt(quizConfig.questionCount)) {
+        console.log('Quiz terminé');
         endQuiz();
         return;
     }
     
     currentQuestion++;
+    console.log('Nouvelle question:', currentQuestion);
     
     // Déterminer le mode pour cette question
     let questionMode = quizConfig.mode;
     if (questionMode === 4) {
-        // Mode mélangé - choisir aléatoirement parmi 1, 2, 3
         questionMode = Math.floor(Math.random() * 3) + 1;
     }
     
@@ -14391,6 +14419,7 @@ function generateNextQuestion() {
     
     updateQuizInterface();
 }
+
 
 function generateMode1Question() {
     // Mode 1: Numéro de verset + nom de sourate → trouver le texte
@@ -14777,23 +14806,9 @@ function confirmAnswer() {
     }
     
     updateScoreDisplay();
-    
-    // ✅ SAUVEGARDER L'ÉTAT APRÈS CHAQUE RÉPONSE
     saveQuizState();
     
-    // Masquer le bouton de confirmation et afficher le bouton suivant
-    document.getElementById('confirmAnswer').style.display = 'none';
-    
-    if (currentQuestionData.currentStep < currentQuestionData.steps) {
-        document.getElementById('nextStep').style.display = 'block';
-    } else {
-        // Question terminée
-        setTimeout(() => {
-            generateNextQuestion();
-        }, 2000);
-    }
-    
-    updateScoreDisplay();
+    console.log('DEBUG confirmAnswer - currentQuestion avant generateNextQuestion:', currentQuestion); // ✅ LOG
     
     // Masquer le bouton de confirmation et afficher le bouton suivant
     document.getElementById('confirmAnswer').style.display = 'none';
@@ -14803,10 +14818,12 @@ function confirmAnswer() {
     } else {
         // Question terminée
         setTimeout(() => {
+            console.log('DEBUG confirmAnswer - setTimeout appel generateNextQuestion'); // ✅ LOG
             generateNextQuestion();
         }, 2000);
     }
 }
+
 
 function nextStep() {
     currentQuestionData.currentStep++;
@@ -14858,17 +14875,18 @@ function endQuiz() {
     document.getElementById('percentage').textContent = percentage + '%';
     
     // Afficher les temps
-    const startTimeStr = timer.startTime.toLocaleString('ar-EG', { 
-        timeZone: 'Europe/Paris', 
-        hour12: false 
-    });
-    const endTimeStr = timer.endTime.toLocaleString('ar-EG', { 
-        timeZone: 'Europe/Paris', 
-        hour12: false 
-    });
-    
-    document.getElementById('startTime').textContent = startTimeStr;
-    document.getElementById('endTime').textContent = endTimeStr;
+    // Afficher les temps
+const startTimeStr = timer.startTime.toLocaleString('fr-FR', { 
+    timeZone: 'Europe/Paris', 
+    hour12: false 
+});
+const endTimeStr = timer.endTime.toLocaleString('fr-FR', { 
+    timeZone: 'Europe/Paris', 
+    hour12: false 
+});
+
+document.getElementById('startTime').textContent = startTimeStr;
+document.getElementById('endTime').textContent = endTimeStr;
     
     const totalTime = timer.endTime - timer.startTime;
     const hours = Math.floor(totalTime / 3600000);
@@ -14883,6 +14901,77 @@ function endQuiz() {
     
     // Afficher la page des résultats
     showPage('resultsPage');
+    
+    // ✅ EFFACER L'ÉTAT DU QUIZ APRÈS TERMINATION
+    localStorage.removeItem('quranQuizState');
+    console.log('État du quiz supprimé (quiz terminé)');
+}
+
+function startNewQuizWithSameSettings() {
+    // Recommencer avec LES MÊMES données
+    // Ne pas toucher à quizConfig, il a les bonnes données
+    
+    // Réinitialiser UNIQUEMENT les variables de progression
+    currentQuestion = 0;
+    score = { correct: 0, incorrect: 0 };
+    quizHistory = [];
+    usedQuestions.clear();
+    
+    // Réinitialiser le timer
+    timer.startTime = new Date();
+    timer.totalPaused = 0;
+    
+    // Acquérir le Wake Lock
+    requestWakeLock();
+    
+    // Démarrer le timer
+    startTimer();
+    
+    // Afficher la page de quiz
+    showPage('quizPage');
+    updateQuizInterface();
+    generateNextQuestion();
+    
+    // Sauvegarder le nouvel état
+    saveQuizState();
+    
+    console.log('Nouveau quiz démarré avec les mêmes paramètres');
+}
+
+function resetAndGoHome() {
+    // Réinitialiser TOUTES les données à leurs valeurs par défaut
+    
+    // Effacer l'état du quiz
+    localStorage.removeItem('quranQuizState');
+    
+    // Réinitialiser les filtres par défaut
+    localStorage.setItem('savedStartSurah', '1');
+    localStorage.setItem('savedEndSurah', '114');
+    localStorage.setItem('savedStartVerse', '1');
+    localStorage.setItem('savedEndVerse', '6');
+    localStorage.setItem('savedQuestionCount', '5');
+    localStorage.removeItem('savedIncludePages');
+    localStorage.removeItem('savedMode');
+    
+    // Réinitialiser les variables du quiz
+    currentQuestion = 0;
+    score = { correct: 0, incorrect: 0 };
+    quizHistory = [];
+    usedQuestions.clear();
+    selectedMode = null;
+    
+    // Arrêter le timer
+    clearInterval(timer.intervalId);
+    releaseWakeLock();
+    
+    // Afficher la page d'accueil
+    showPage('homePage');
+    
+    // Repeupler les filtres avec les valeurs par défaut
+    populateSurahSelects();
+    updateVerseCount();
+    
+    console.log('Retour à l\'accueil avec données par défaut');
 }
 
 function displayDetailedHistory() {
