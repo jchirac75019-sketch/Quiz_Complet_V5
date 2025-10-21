@@ -13975,15 +13975,23 @@ function initializeApp() {
 
 function setupEventListeners() {
     // Gestionnaires d'événements pour la page d'accueil
-    document.getElementById('startSurah').addEventListener('change', updateVerseCount);
-    document.getElementById('endSurah').addEventListener('change', updateVerseCount);
+    document.getElementById('startSurah').addEventListener('change', event => {
+        // Sauvegarder dans localStorage
+        localStorage.setItem('savedStartSurah', event.target.value);
+        onSurahChange(event);
+        updateVerseCount();
+    });
+    
+    document.getElementById('endSurah').addEventListener('change', event => {
+        // Sauvegarder dans localStorage
+        localStorage.setItem('savedEndSurah', event.target.value);
+        onSurahChange(event);
+        updateVerseCount();
+    });
+    
     document.getElementById('startVerse').addEventListener('input', validateVerseInputs);
     document.getElementById('endVerse').addEventListener('input', validateVerseInputs);
     document.getElementById('startQuiz').addEventListener('click', startQuiz);
-    document.getElementById('endSurah').addEventListener('change', event => {
-    onSurahChange(event);    // ajuste le numéro par défaut
-    updateVerseCount();      // recalcule ensuite le nombre total d’ayat
- }); 
    
     // Sélection du mode de quiz
     document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -14009,9 +14017,9 @@ function populateSurahSelects() {
     const startSelect = document.getElementById('startSurah');
     const endSelect = document.getElementById('endSurah');
     
-    // Sauvegarder les valeurs actuelles AVANT de vider
-    const currentStartValue = startSelect.value || '1';
-    const currentEndValue = endSelect.value || '114';
+    // Récupérer les valeurs sauvegardées dans localStorage (ou valeurs par défaut)
+    const savedStartSurah = localStorage.getItem('savedStartSurah') || '1';
+    const savedEndSurah = localStorage.getItem('savedEndSurah') || '114';
     
     // Vider les sélecteurs
     startSelect.innerHTML = '';
@@ -14030,10 +14038,11 @@ function populateSurahSelects() {
         endSelect.appendChild(option2);
     });
     
-    // RESTAURER les valeurs précédentes (évite la réinitialisation visuelle)
-    startSelect.value = currentStartValue;
-    endSelect.value = currentEndValue;
+    // Restaurer les valeurs sauvegardées
+    startSelect.value = savedStartSurah;
+    endSelect.value = savedEndSurah;
 }
+
 
 function onSurahChange(event) {
   // Récupérer l’ID de la sourate sélectionnée
