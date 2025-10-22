@@ -4,7 +4,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="theme-color" content="#21808D">
     <title>اختبار الآيات القرآنية</title> 
  
@@ -17,7 +17,7 @@
     <meta name="apple-mobile-web-app-title" content="اختبار القرآن">
     
     <!-- Prevent zoom on mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
   <!-- Partie 2 : style.css (Design et styles) inlined -->
   <style>
@@ -89,6 +89,7 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    height: 100%;
 }
 
 body {
@@ -97,10 +98,10 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    height: auto;
     direction: rtl;
     text-align: right;
-    // overflow-x: hidden;
-    overflow-x: auto;  /* Permettre le scroll horizontal si nécessaire */
+    overflow-x: auto;
 }
 
 /* Container and Layout */
