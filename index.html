@@ -99,7 +99,8 @@ body {
     min-height: 100vh;
     direction: rtl;
     text-align: right;
-    overflow-x: hidden;
+    // overflow-x: hidden;
+    overflow-x: auto;  /* Permettre le scroll horizontal si nécessaire */
 }
 
 /* Container and Layout */
@@ -113,6 +114,7 @@ body {
     display: none;
     min-height: 100vh;
     animation: fadeIn 0.5s ease-in-out;
+    overflow-y: auto;  /* Permettre le scroll vertical */
 }
 
 .page.active {
