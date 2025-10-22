@@ -13877,17 +13877,17 @@ function preventRefreshDuringQuiz() {
         }
     });
     
-        // Empêcher le pull-to-refresh sur mobile
+    // Empêcher le pull-to-refresh sur mobile
     document.addEventListener('touchmove', event => {
         if (currentQuestion > 0 && event.touches.length > 0) {
             const touch = event.touches[0];
-            // Bloquer UNIQUEMENT si on est vraiment en haut de la page
-            if (document.documentElement.scrollTop === 0 && touch.clientY > 50) {
+            // Bloquer uniquement si on tire vers le bas depuis le haut
+            if (touch.clientY > 0 && document.documentElement.scrollTop === 0) {
                 event.preventDefault();
             }
         }
     }, { passive: false });
-
+}
 
 function setupEventListeners() {
     // Sélection des sourates - avec sauvegarde
