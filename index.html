@@ -1010,6 +1010,60 @@ html, body {
     height: auto !important;
 }
 
+/* Animation de flèche pour Mode 3 */
+.question-with-arrow {
+    position: relative;
+    display: block;
+    padding-right: 60px; /* Espace pour la flèche */
+}
+
+.arrow-animated {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.5rem;
+    color: #2196F3;
+    font-weight: bold;
+}
+
+.arrow-left-to-right {
+    animation: moveLeftToRight 2s ease-in-out infinite;
+}
+
+.arrow-right-to-left {
+    animation: moveRightToLeft 2s ease-in-out infinite;
+}
+
+@keyframes moveLeftToRight {
+    0% {
+        right: 90%;
+        opacity: 0.3;
+    }
+    50% {
+        right: 50%;
+        opacity: 1;
+    }
+    100% {
+        right: 10%;
+        opacity: 0.3;
+    }
+}
+
+@keyframes moveRightToLeft {
+    0% {
+        left: 90%;
+        opacity: 0.3;
+    }
+    50% {
+        left: 50%;
+        opacity: 1;
+    }
+    100% {
+        left: 10%;
+        opacity: 0.3;
+    }
+}
+
   </style>
 </head>
 <body>
@@ -14549,7 +14603,10 @@ function displayMode3Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div class="question-blink" style="color: #666;">اختر الآية التي تسبق هذه الآية:</div>
+            <div style="position: relative;">
+                <div class="question-blink" style="display: inline-block;">اختر الآية التي تسبق هذه الآية:</div>
+                <div class="arrow-animated arrow-left-to-right" style="display: inline-block; margin-right: 1rem;">→</div>
+            </div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14570,7 +14627,10 @@ function displayMode3Question() {
             </div>
             <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
 
-            <div class="question-blink" style="color: #666;">اختر الآية التي تتبع هذه الآية:</div>
+            <div style="position: relative;">
+                <div class="arrow-animated arrow-right-to-left" style="display: inline-block; margin-left: 1rem;">←</div>
+                <div class="question-blink" style="display: inline-block;">اختر الآية التي تتبع هذه الآية:</div>
+            </div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
