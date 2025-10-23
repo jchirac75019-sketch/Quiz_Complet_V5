@@ -4,12 +4,49 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#21808D">
-    <title>اختبار الآيات القرآنية</title> 
+    <title>اختبار الآيات القرآنية</title>
  
-    <!-- PWA Manifest -->
-<link rel="manifest" href="data:application/json,{%22name%22:%22اختبار%20الآيات%20القرآنية%22,%22short_name%22:%22اختبار%20قرآني%22,%22start_url%22:%22./%22,%22display%22:%22standalone%22,%22background_color%22:%22%2321808D%22,%22theme_color%22:%22%2321808D%22}">
+
+
+   
+    <!-- PWA Manifest (Progressive web apps) -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Partie 4 : manifest.json (Configuration PWA : Progressive web apps) -->
+<script>
+{
+    "name": "اختبار الآيات القرآنية",
+    "short_name": "اختبار قرآني",
+    "description": "تطبيق اختبار الآيات القرآنية - مصحف حفص 604 صفحة",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#21808D",
+    "theme_color": "#21808D",
+    "orientation": "portrait-primary",
+    "scope": "./",
+    "lang": "ar",
+    "dir": "rtl",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='%2321808D'%3E%3Ctext y='70' font-size='70'%3Eق%3C/text%3E%3C/svg%3E",
+            "sizes": "192x192",
+            "type": "image/svg+xml"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='%2321808D'%3E%3Ctext y='70' font-size='70'%3Eق%3C/text%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml"
+        }
+    ],
+    "categories": ["education", "lifestyle", "utilities"],
+    "screenshots": []
+}
+</script>
+
+
+
+
     
     <!-- Meta tags for PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +54,11 @@
     <meta name="apple-mobile-web-app-title" content="اختبار القرآن">
     
     <!-- Prevent zoom on mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+
+
+
 
   <!-- Partie 2 : style.css (Design et styles) inlined -->
   <style>
@@ -89,7 +130,6 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
-    height: 100%;
 }
 
 body {
@@ -98,10 +138,9 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
-    height: auto;
     direction: rtl;
     text-align: right;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 /* Container and Layout */
@@ -115,7 +154,6 @@ body {
     display: none;
     min-height: 100vh;
     animation: fadeIn 0.5s ease-in-out;
-    overflow-y: auto;  /* Permettre le scroll vertical */
 }
 
 .page.active {
@@ -171,6 +209,30 @@ body {
 }
 /* ----------- Nouvelle version réduite et plus compacte du CSS pour la zone des titres------------ */
 
+/* ----------- Ancienne version réduite et plus compacte du CSS pour la zone des titres------------ */
+/* Headers */
+// .app-header {
+    // text-align: center;
+    // margin-bottom: var(--spacing-xl);
+    // padding: var(--spacing-lg) 0;
+// }
+
+// .app-header h1 {
+    // font-size: var(--font-4xl);
+    // color: var(--primary-color);
+    // font-weight: 700;
+    // margin-bottom: var(--spacing-sm);
+    // text-shadow: 0 2px 4px rgba(33, 128, 141, 0.2);
+// }
+
+// .subtitle {
+    // font-size: var(--font-lg);
+    // color: var(--text-secondary);
+    // font-weight: 400;
+// }
+/* ----------- Ancienne version réduite et plus compacte du CSS pour la zone des titres------------ */
+
+
 /* ------- Nouvelle version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
 /* Forms */
 .filters-section h2,
@@ -182,6 +244,18 @@ body {
     font-weight: 600;
 }
 /* ------- Nouvelle version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
+
+/* ------- Ancienne version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
+/* Forms */
+// .filters-section h2,
+// .quiz-modes h2 {
+    // font-size: var(--font-2xl);
+    // color: var(--primary-color);
+    // margin-bottom: var(--spacing-lg);
+    // text-align: center;
+    // font-weight: 600;
+// }
+/* ------- Ancienne version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
 
 .filter-group {
     margin-bottom: var(--spacing-lg);
@@ -196,6 +270,16 @@ body {
     margin-bottom: 0.25rem;      /* réduire l’espace sous le label */
 }
 /* ------- Nouvelle version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
+
+/* ------- Ancienne version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
+// .form-label {
+    // display: block;
+    // font-size: var(--font-lg);
+    // font-weight: 600;
+    // color: var(--text-primary);
+    // margin-bottom: var(--spacing-sm);
+// }
+/* ------- Ancienne version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
 
 .range-inputs {
     display: grid;
@@ -421,15 +505,6 @@ body {
 
 .quiz-header .score-display {
     display: flex;
-    gap: var(--spacing-sm);
-    align-items: center;
-    padding: 0;
-    margin-bottom: 0;
-    flex-wrap: nowrap;  /* AJOUTER cette ligne */
-}
-
-.quiz-header .score-display {
-    display: flex;
     gap: var(--spacing-lg);
     align-items: center;
 }
@@ -461,6 +536,14 @@ body {
 
 /* - Nouvelle version réduite et plus compacte du Conteneur des contrôles du quiz (où est le bouton و compteur) - */
 
+/* - Ancienne version réduite et plus compacte du Conteneur des contrôles du quiz (où est le bouton و compteur) - */
+// .quiz-controls {
+    // display: flex;
+    // align-items: center;
+    // gap: var(--spacing-md);
+// }
+/* - Ancienne version réduite et plus compacte du Conteneur des contrôles du quiz (où est le bouton و compteur) - */
+
 .timer {
     font-size: var(--font-lg);
     font-weight: 600;
@@ -482,7 +565,6 @@ body {
 .score-item.incorrect {
     padding: 0.25rem 0.5rem;    /* Moins de padding */
     font-weight: 600;
-    border-radius: var(--radius-md);  /* Ajouter les coins arrondis */
 }
 
 .score-item.correct {
@@ -504,11 +586,45 @@ body {
 }
 
 /* - Nouvelle version réduite et plus compacte du Conteneur du compteur des bonnes/mauvaises réponses - */
+/* - Ancienne version réduite et plus compacte du Conteneur du compteur des bonnes/mauvaises réponses - */
+/* Score Display */
+// .score-display {
+    // display: flex;
+    // justify-content: center;
+    // gap: var(--spacing-lg);
+    // margin-bottom: var(--spacing-lg);
+// }
+
+// .score-item {
+    // padding: var(--spacing-md) var(--spacing-lg);
+    // border-radius: var(--radius-lg);
+    // text-align: center;
+    // font-weight: 600;
+    // min-width: 150px;
+// }
+
+// .score-item.correct {
+    // background: rgba(40, 167, 69, 0.1);
+    // color: var(--success-color);
+    // border: 2px solid var(--success-color);
+// }
+
+// .score-item.incorrect {
+    // background: rgba(220, 53, 69, 0.1);
+    // color: var(--error-color);
+    // border: 2px solid var(--error-color);
+// }
+
+// .score-label {
+    // display: block;
+    // font-size: var(--font-sm);
+    // margin-bottom: var(--spacing-xs);
+// }
+/* - Ancienne version réduite et plus compacte du Conteneur du compteur des bonnes/mauvaises réponses - */
 
 /* Question Container */
 .question-container {
-    min-height: unset;    /* ou min-height: 180px; pour mobile */
-    padding: 0.4rem 0.6rem;  /* (ajoute ou ajuste le padding s’il existe) */
+    min-height: 400px;
 }
 
 /* - Nouvelle version : exemple de CSS pour réduire la hauteur de ce cadre - */
@@ -522,24 +638,28 @@ body {
 }
 
 /* - Nouvelle version : exemple de CSS pour réduire la hauteur de ce cadre - */
+/* - Ancienne version : exemple de CSS pour réduire la hauteur de ce cadre - */
+// .question-subject {
+    // background: rgba(33, 128, 141, 0.1);
+    // padding: var(--spacing-lg);
+    // border-radius: var(--radius-md);
+    // margin-bottom: var(--spacing-lg);
+    // font-size: var(--font-lg);
+    // font-weight: 600;
+    // color: var(--primary-color);
+    // text-align: center;
+// }
+/* - Ancienne version : exemple de CSS pour réduire la hauteur de ce cadre - */
 
 /* - Nouvelle version : exemple de CSS pour réduire la hauteur du cadre de la question - */
 #questionText {
-    padding: 0.1rem 0.25rem;     /* Réduire les espacements internes */
-    font-size: 1.15rem;             /* Taille de police plus petite */
-    line-height: 1.2;            /* Réduire l’interlignage vertical */
-    margin-bottom: 0.2rem;       /* Réduire la marge sous le cadre */
+    padding: 0.25rem 0.5rem;     /* Réduire les espacements internes */
+    font-size: 1.5rem;             /* Taille de police plus petite */
+    line-height: 1.3;            /* Réduire l’interlignage vertical */
+    margin-bottom: 0.5rem;       /* Réduire la marge sous le cadre */
     max-height: none;            /* S’il y a une hauteur max, la supprimer */
     background-color: transparent; /* Si un fond est appliqué, le réduire ou enlever */
 }
-
-#questionText > div:first-child {
-    white-space: nowrap;      /* Empêche le retour à la ligne */
-    // overflow: hidden;         /* Cache le débordement éventuel */
-    // text-overflow: ellipsis;  /* Ajoute des points de suspension si trop long (optionnel) */
-    overflow-x: auto;         /* Ajoute un scroll horizontal si nécessaire */
-}
-
 /* - Nouvelle version : exemple de CSS pour réduire la hauteur du cadre de la question - */
 
 /* - Ancienne version : exemple de CSS pour réduire la hauteur du cadre de la question - */
@@ -564,54 +684,24 @@ body {
     font-weight: 600;
 }
 
-#stepIndicator {
-    font-size: 0.85rem !important;
-}
-
-.highlight-blue {
-    color: #2196F3;        /* Bleu vif */
-    font-weight: 700;      /* Gras pour renforcer la visibilité */
-}
-
-.question-blink {
-    color: #dc3545 !important;  /* Rouge */
-    font-weight: 600;
-    animation: blink-red 0.8s ease-in-out 3;  /* 3 répétitions de 0.8s chacune (plus lent) */
-}
-
-@keyframes blink-red {
-    0%, 100% { 
-        opacity: 1; 
-        color: #dc3545;
-        font-size: 1em;  /* Taille normale */
-    }
-    50% { 
-        opacity: 0.3; 
-        color: #ff6b7a;
-        font-size: 1.15em;  /* Augmente de 15% quand elle clignote */
-    }
-}
-
 /* Options */
 .options-container {
     display: grid;
-    gap: 0.4rem;      /* Avant : var(--spacing-md) */
-    margin-bottom: 0.6rem;  /* Avant : var(--spacing-lg) */
-    /* Retire ou ajuste le padding supplémentaire éventuel */
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
 .option-btn {
-    padding: 0.4rem 0.6rem;   /* Avant c'était : var(--spacing-lg) */
+    padding: var(--spacing-lg);
     border: 2px solid rgba(33, 128, 141, 0.2);
     border-radius: var(--radius-md);
     background: var(--bg-secondary);
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1rem;   /* Réduit, ex: 1rem au lieu de var(--font-lg) */
+    font-size: var(--font-lg);
     font-family: var(--font-arabic);
     text-align: center;
-    line-height: 1.3;  /* Plus petit interlignage */
-    margin: 0.25rem 0; /* Ajoute (ou remplace) pour coller les boutons */
+    line-height: 1.6;
 }
 
 .option-btn:hover {
@@ -642,7 +732,7 @@ body {
 /* Results Page */
 .results-header {
     text-align: center;
-    margin-bottom: 0.75rem;  /* Réduit de var(--spacing-xl) */
+    margin-bottom: var(--spacing-xl);
 }
 
 .results-header h1 {
@@ -652,7 +742,7 @@ body {
 }
 
 .results-summary {
-    margin-bottom: 0.75rem;  /* Réduit de var(--spacing-lg) */
+    margin-bottom: var(--spacing-lg);
 }
 
 .summary-stats {
@@ -664,42 +754,10 @@ body {
 
 .stat-item {
     text-align: center;
-    padding: 0.5rem 0.75rem;  /* Réduit de var(--spacing-lg) */
+    padding: var(--spacing-lg);
     border-radius: var(--radius-md);
     background: var(--bg-light);
 }
-
-.stat-label {
-    display: block;
-    font-size: var(--font-base);
-    margin-bottom: 0.25rem;  /* Réduit de var(--spacing-xs) */
-}
-
-.stat-value {
-    font-size: var(--font-2xl);
-    font-weight: 700;
-}
-
-.time-item {
-    text-align: center;
-    padding: 0.5rem 0.75rem;  /* Réduit de var(--spacing-md) */
-    background: rgba(33, 128, 141, 0.1);
-    border-radius: var(--radius-md);
-}
-
-.time-label {
-    display: block;
-    font-size: var(--font-sm);
-    color: var(--text-secondary);
-    margin-bottom: 0.15rem;  /* Réduit de var(--spacing-xs) */
-}
-
-.time-value {
-    font-size: var(--font-lg);
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
 
 .stat-item.correct {
     background: rgba(40, 167, 69, 0.1);
@@ -833,37 +891,11 @@ body {
         justify-content: center;
     }
     
-/* À SUPPRIMER ou COMMENTER (J'ai commenté cette ligne car je veux que les 2 compteurs soient sur la même ligne)
-    /* .score-display {
+    .score-display {
         flex-direction: column;
         align-items: center;
-    } */
-    
-@media (max-width: 768px) {
-    .quiz-header .score-item {
-        padding: 0.15rem 0.3rem;    /* Padding réduit */
-        font-size: 0.75rem;         /* Police plus petite */
-        white-space: nowrap;        /* Évite le retour à la ligne du texte */
     }
     
-    .quiz-header .score-label {
-        font-size: 0.7rem;          /* Label encore plus petit */
-    }
-    
-    .quiz-header .score-display {
-        gap: 0.25rem;               /* Écart minimal entre les deux compteurs */
-    }
-    
-    .option-btn, 
-    .options-container,
-    .question-container {
-        padding: 0.2rem 0.35rem !important;
-        font-size: 0.85rem !important;
-    }
-    .options-container { gap: 0.25rem !important; }
-    #questionText { font-size: 1rem !important; padding: 0.1rem 0.15rem !important; }
-}
-
     .summary-stats {
         grid-template-columns: 1fr;
     }
@@ -992,6 +1024,15 @@ select:focus {
     outline-offset: 2px;
 }
   </style>
+
+
+
+
+
+
+
+
+
 </head>
 <body>
   <!-- Page d'accueil -->
@@ -1212,6 +1253,15 @@ select:focus {
             </div>
         </div>
     </div>
+
+
+
+
+
+
+
+
+
 
   <!-- Partie 3 : JavaScript app.js (Logique JavaScript complète) inlined -->
   <script>
@@ -13813,7 +13863,6 @@ const pageIndex = {
 };
 
 // Variables globales pour le quiz
-let filtersChanged = false;
 let quizConfig = {};
 let currentQuestion = 0;
 let score = { correct: 0, incorrect: 0 };
@@ -13833,24 +13882,11 @@ let wakeLock = null;
 
 // Initialisation de l'application
 document.addEventListener('DOMContentLoaded', function() {
-    // Toujours peupler les filtres et attacher les écouteurs EN PREMIER
-    populateSurahSelects();
+    initializeApp();
     setupEventListeners();
+    populateSurahSelects();
     updateVerseCount();
     
-    // Ensuite, vérifier s'il y a un quiz à restaurer
-    const saved = localStorage.getItem('quranQuizState');
-    if (saved) {
-        const state = JSON.parse(saved);
-        // Ne restaurer que si currentQuestion > 0 (quiz vraiment en cours)
-        if (state.currentQuestion > 0) {
-            restoreQuizState();
-        }
-    }
-    
-    // ✅ Appeler preventRefreshDuringQuiz()
-    preventRefreshDuringQuiz();
-
     // Enregistrer le Service Worker pour PWA
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
@@ -13864,76 +13900,21 @@ function initializeApp() {
     showPage('homePage');
 }
 
-function preventRefreshDuringQuiz() {
-    // Empêcher F5 et Ctrl+R pendant le quiz
-    document.addEventListener('keydown', event => {
-        // Si quiz en cours et touches F5 ou Ctrl+R
-        if (currentQuestion > 0) {
-            if (event.key === 'F5' || (event.ctrlKey && event.key === 'r') || (event.metaKey && event.key === 'r')) {
-                event.preventDefault();
-                console.log('Rafraîchissement bloqué pendant le quiz');
-                return false;
-            }
-        }
-    });
-    
-    // Empêcher le pull-to-refresh sur mobile
-    document.addEventListener('touchmove', event => {
-        if (currentQuestion > 0 && event.touches.length > 0) {
-            const touch = event.touches[0];
-            // Bloquer uniquement si on tire vers le bas depuis le haut
-            if (touch.clientY > 0 && document.documentElement.scrollTop === 0) {
-                event.preventDefault();
-            }
-        }
-    }, { passive: false });
-}
-
 function setupEventListeners() {
-    // Sélection des sourates - avec sauvegarde
-    document.getElementById('startSurah').addEventListener('change', event => {
-        localStorage.setItem('savedStartSurah', event.target.value);
-        onSurahChange(event);
-        updateVerseCount();
-    });
-    
-    document.getElementById('endSurah').addEventListener('change', event => {
-        localStorage.setItem('savedEndSurah', event.target.value);
-        onSurahChange(event);
-        updateVerseCount();
-    });
-    
-    // Sélection des versets - avec sauvegarde
-    document.getElementById('startVerse').addEventListener('input', event => {
-        localStorage.setItem('savedStartVerse', event.target.value);
-        validateVerseInputs();
-    });
-    
-    document.getElementById('endVerse').addEventListener('input', event => {
-        localStorage.setItem('savedEndVerse', event.target.value);
-        validateVerseInputs();
-    });
-    
-    // Nombre de questions - avec sauvegarde
-    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
-        radio.addEventListener('change', event => {
-            localStorage.setItem('savedQuestionCount', event.target.value);
-        });
-    });
-    
-    // Option "inclure les pages" - avec sauvegarde
-    document.getElementById('includePages').addEventListener('change', event => {
-        localStorage.setItem('savedIncludePages', event.target.checked ? 'true' : 'false');
-    });
-    
+    // Gestionnaires d'événements pour la page d'accueil
+    document.getElementById('startSurah').addEventListener('change', updateVerseCount);
+    document.getElementById('endSurah').addEventListener('change', updateVerseCount);
+    document.getElementById('startVerse').addEventListener('input', validateVerseInputs);
+    document.getElementById('endVerse').addEventListener('input', validateVerseInputs);
     document.getElementById('startQuiz').addEventListener('click', startQuiz);
+    document.getElementById('endSurah').addEventListener('change', event => {
+    onSurahChange(event);    // ajuste le numéro par défaut
+    updateVerseCount();      // recalcule ensuite le nombre total d’ayat
+ }); 
    
-    // Sélection du mode de quiz - avec sauvegarde
+    // Sélection du mode de quiz
     document.querySelectorAll('.mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            localStorage.setItem('savedMode', btn.dataset.mode);
-            selectQuizMode(btn.dataset.mode);
-        });
+        btn.addEventListener('click', () => selectQuizMode(btn.dataset.mode));
     });
     
     // Gestionnaires pour la page de quiz
@@ -13941,9 +13922,9 @@ function setupEventListeners() {
     document.getElementById('confirmAnswer').addEventListener('click', confirmAnswer);
     document.getElementById('nextStep').addEventListener('click', nextStep);
     
-    // ✅ Gestionnaires pour la page de résultats - MODIFIÉS
-    document.getElementById('newQuiz').addEventListener('click', startNewQuizWithSameSettings);
-    document.getElementById('backToHome').addEventListener('click', resetAndGoHome);
+    // Gestionnaires pour la page de résultats
+    document.getElementById('newQuiz').addEventListener('click', () => showPage('homePage'));
+    document.getElementById('backToHome').addEventListener('click', () => showPage('homePage'));
     
     // Gestion de la visibilité de la page pour le timer
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -13955,16 +13936,7 @@ function populateSurahSelects() {
     const startSelect = document.getElementById('startSurah');
     const endSelect = document.getElementById('endSurah');
     
-    // Récupérer les valeurs sauvegardées
-    const savedStartSurah = localStorage.getItem('savedStartSurah') || '1';
-    const savedEndSurah = localStorage.getItem('savedEndSurah') || '114';
-    const savedStartVerse = localStorage.getItem('savedStartVerse') || '1';
-    const savedEndVerse = localStorage.getItem('savedEndVerse') || '7';
-    const savedQuestionCount = localStorage.getItem('savedQuestionCount') || '5';
-    const savedIncludePages = localStorage.getItem('savedIncludePages') === 'true';
-    const savedMode = localStorage.getItem('savedMode');
-    
-    // Vider les sélecteurs de sourates
+    // Vider les sélecteurs
     startSelect.innerHTML = '';
     endSelect.innerHTML = '';
     
@@ -13981,30 +13953,9 @@ function populateSurahSelects() {
         endSelect.appendChild(option2);
     });
     
-    // Restaurer les valeurs sauvegardées des sourates
-    startSelect.value = savedStartSurah;
-    endSelect.value = savedEndSurah;
-    
-    // Restaurer les valeurs sauvegardées des versets
-    document.getElementById('startVerse').value = savedStartVerse;
-    document.getElementById('endVerse').value = savedEndVerse;
-    
-    // Restaurer le nombre de questions
-    document.querySelectorAll('input[name="questionCount"]').forEach(radio => {
-        radio.checked = radio.value === savedQuestionCount;
-    });
-    
-    // Restaurer l'option "inclure les pages"
-    document.getElementById('includePages').checked = savedIncludePages;
-    
-    // Restaurer le mode sélectionné
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-        if (btn.dataset.mode === savedMode) {
-            btn.classList.add('selected');
-        } else {
-            btn.classList.remove('selected');
-        }
-    });
+    // Valeurs par défaut : première et dernière sourate
+    startSelect.value = 1;
+    endSelect.value = 114;
 }
 
 function onSurahChange(event) {
@@ -14139,84 +14090,6 @@ function startQuiz() {
     showPage('quizPage');
     updateQuizInterface();
     generateNextQuestion();
-    
-    // Sauvegarder l'état du quiz
-    saveQuizState();
-}
-
-function restoreQuizState() {
-    const saved = localStorage.getItem('quranQuizState');
-    
-    if (!saved) {
-        return;
-    }
-    
-    const state = JSON.parse(saved);
-    
-    // Restaurer toutes les variables
-    quizConfig = state.quizConfig;
-    currentQuestion = state.currentQuestion;
-    score = state.score;
-    quizHistory = state.quizHistory;
-    usedQuestions = new Set(state.usedQuestions);
-    selectedMode = state.selectedMode;
-    currentQuestionData = state.currentQuestionData;
-    
-    if (state.timer.startTime) {
-        timer.startTime = new Date(state.timer.startTime);
-        timer.totalPaused = state.timer.totalPaused;
-    }
-    
-    console.log('État du quiz restauré - currentQuestion:', currentQuestion);
-    
-    // Afficher la page de quiz
-    showPage('quizPage');
-    updateQuizInterface();
-    updateScoreDisplay();
-    
-    // ✅ Si currentQuestion est 0, générer la première question
-    if (currentQuestion === 0) {
-        generateNextQuestion();
-    } else {
-        // ✅ Sinon, afficher la question restaurée SANS l'incrémenter
-        displayCurrentQuestionWithoutIncrement();
-    }
-    
-    startTimer();
-}
-
-function displayCurrentQuestion() {
-    // Afficher la question actuelle selon le mode
-    switch (currentQuestionData.mode) {
-        case 1:
-            displayMode1Question();
-            break;
-        case 2:
-            displayMode2Question();
-            break;
-        case 3:
-            displayMode3Question();
-            break;
-    }
-}
-
-function displayCurrentQuestionWithoutIncrement() {
-    // Afficher la question actuelle SANS l'incrémenter
-    // Réinitialiser les boutons d'options
-    document.getElementById('confirmAnswer').style.display = 'block';
-    document.getElementById('nextStep').style.display = 'none';
-    
-    switch (currentQuestionData.mode) {
-        case 1:
-            displayMode1Question();
-            break;
-        case 2:
-            displayMode2Question();
-            break;
-        case 3:
-            displayMode3Question();
-            break;
-    }
 }
 
 async function requestWakeLock() {
@@ -14236,28 +14109,6 @@ function releaseWakeLock() {
         wakeLock = null;
         console.log('Wake Lock désactivé');
     }
-}
-
-function saveQuizState() {
-    // Ne sauvegarder que si un quiz est réellement en cours
-    if (currentQuestion === 0) return;
-    
-    const state = {
-        quizConfig,
-        currentQuestion,
-        score,
-        quizHistory,
-        usedQuestions: Array.from(usedQuestions),
-        selectedMode,
-        currentQuestionData,
-        timer: {
-            startTime: timer.startTime?.toISOString() || null,
-            totalPaused: timer.totalPaused
-        }
-    };
-    
-    localStorage.setItem('quranQuizState', JSON.stringify(state));
-    console.log('État du quiz sauvegardé');
 }
 
 function startTimer() {
@@ -14302,26 +14153,19 @@ function handleVisibilityChange() {
 function generateNextQuestion() {
     currentStep = 0;
     
-    console.log('DEBUG generateNextQuestion START:', {
-        currentQuestion,
-        questionCount: quizConfig.questionCount,
-        comparison: currentQuestion >= parseInt(quizConfig.questionCount)
-    });
-    
     // Vérifier si le quiz est terminé
     if (quizConfig.questionCount !== 'infinite' && 
         currentQuestion >= parseInt(quizConfig.questionCount)) {
-        console.log('Quiz terminé');
         endQuiz();
         return;
     }
     
     currentQuestion++;
-    console.log('DEBUG generateNextQuestion - currentQuestion INCRÉMENTÉ à:', currentQuestion); // ✅ LOG
     
     // Déterminer le mode pour cette question
     let questionMode = quizConfig.mode;
     if (questionMode === 4) {
+        // Mode mélangé - choisir aléatoirement parmi 1, 2, 3
         questionMode = Math.floor(Math.random() * 3) + 1;
     }
     
@@ -14339,8 +14183,6 @@ function generateNextQuestion() {
     }
     
     updateQuizInterface();
-    console.log('DEBUG generateNextQuestion END - currentQuestion final:', currentQuestion); // ✅ LOG
-    saveQuizState(); // ✅ SAUVEGARDE à la fin
 }
 
 function generateMode1Question() {
@@ -14452,10 +14294,9 @@ function displayMode1Question() {
     if (currentQuestionData.currentStep === 1) {
         document.getElementById('questionText').innerHTML = `
             <div style="font-size: 1.5em; margin-bottom: 0.25rem;">
-                <strong>سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></strong>
-
+                <strong>سورة ${surah.name_arabic} - الآية رقم ${verse.verseNumber}</strong>
             </div>
-            <div class="question-blink" style="color: #666;">اختر النص الصحيح لهذه الآية:</div>
+            <div style="color: #666;">اختر النص الصحيح لهذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14470,7 +14311,7 @@ function displayMode1Question() {
             <div style="background: #f0f8ff; padding: 1em; border-radius: 8px; margin: 1em 0;">
                 ${verse.text}
             </div>
-            <div class="question-blink">اختر رقم الصفحة الصحيح لهذه الآية:</div>
+            <div style="color: #666;">اختر رقم الصفحة الصحيح لهذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14490,7 +14331,7 @@ function displayMode2Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div class="question-blink" style="color: #666;">اختر رقم الآية الصحيح:</div>
+            <div style="color: #666;">اختر رقم الآية الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14502,9 +14343,8 @@ function displayMode2Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div style="color: #666; margin-bottom: 0.5em;">رقم الآية: <span class="highlight-blue">${verse.verseNumber}</span></div>
-
-            <div class="question-blink" style="color: #666;">اختر اسم السورة الصحيح:</div>
+            <div style="color: #666; margin-bottom: 0.5em;">رقم الآية: ${verse.verseNumber}</div>
+            <div style="color: #666;">اختر اسم السورة الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14516,9 +14356,8 @@ function displayMode2Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
-
-            <div class="question-blink" style="color: #666;">اختر رقم الصفحة الصحيح:</div>
+            <div style="color: #666; margin-bottom: 0.5em;">سورة ${surah.name_arabic} - الآية رقم ${verse.verseNumber}</div>
+            <div style="color: #666;">اختر رقم الصفحة الصحيح:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14538,9 +14377,8 @@ function displayMode3Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
-
-            <div class="question-blink" style="color: #666;">اختر الآية التي تسبق هذه الآية:</div>
+            <div style="color: #666; margin-bottom: 0.5em;">سورة ${surah.name_arabic} - الآية رقم ${verse.verseNumber}</div>
+            <div style="color: #666;">اختر الآية التي تسبق هذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14559,9 +14397,8 @@ function displayMode3Question() {
             <div style="background: #f0f8ff; padding: 1.5em; border-radius: 8px; margin: 1em 0; font-size: 1.3em;">
                 ${verse.text}
             </div>
-            <div style="color: #666; margin-bottom: 0.5em;">سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-blue">${verse.verseNumber}</span></div>
-
-            <div class="question-blink" style="color: #666;">اختر الآية التي تتبع هذه الآية:</div>
+            <div style="color: #666; margin-bottom: 0.5em;">سورة ${surah.name_arabic} - الآية رقم ${verse.verseNumber}</div>
+            <div style="color: #666;">اختر الآية التي تتبع هذه الآية:</div>
         `;
         
         document.getElementById('stepIndicator').textContent = 
@@ -14703,13 +14540,10 @@ function confirmAnswer() {
         btn.disabled = true;
     });
     
-        // Enregistrer la réponse avec plus de détails
-        const correctButton = Array.from(document.querySelectorAll('.option-btn')).find(btn =>              btn.getAttribute('data-correct') === 'true');
-    
+    // Enregistrer la réponse
     const stepResult = {
-        questionText: document.getElementById('questionText').textContent,
-        userAnswer: selectedOption.textContent,
-        correctAnswer: correctButton ? correctButton.textContent : '',
+        question: document.getElementById('questionText').textContent,
+        answer: selectedOption.textContent,
         correct: isCorrect,
         step: currentQuestionData.currentStep
     };
@@ -14731,9 +14565,6 @@ function confirmAnswer() {
     }
     
     updateScoreDisplay();
-    saveQuizState();
-    
-    console.log('DEBUG confirmAnswer - currentQuestion AVANT setTimeout:', currentQuestion); // ✅ LOG 1
     
     // Masquer le bouton de confirmation et afficher le bouton suivant
     document.getElementById('confirmAnswer').style.display = 'none';
@@ -14743,10 +14574,7 @@ function confirmAnswer() {
     } else {
         // Question terminée
         setTimeout(() => {
-            console.log('DEBUG confirmAnswer - AVANT generateNextQuestion, currentQuestion:', currentQuestion); // ✅ LOG 2
             generateNextQuestion();
-            console.log('DEBUG confirmAnswer - APRÈS generateNextQuestion, currentQuestion:', currentQuestion); // ✅ LOG 3
-            saveQuizState(); // ✅ SAUVEGARDE ENCORE UNE FOIS après
         }, 2000);
     }
 }
@@ -14801,18 +14629,17 @@ function endQuiz() {
     document.getElementById('percentage').textContent = percentage + '%';
     
     // Afficher les temps
-    // Afficher les temps
-const startTimeStr = timer.startTime.toLocaleString('fr-FR', { 
-    timeZone: 'Europe/Paris', 
-    hour12: false 
-});
-const endTimeStr = timer.endTime.toLocaleString('fr-FR', { 
-    timeZone: 'Europe/Paris', 
-    hour12: false 
-});
-
-document.getElementById('startTime').textContent = startTimeStr;
-document.getElementById('endTime').textContent = endTimeStr;
+    const startTimeStr = timer.startTime.toLocaleString('ar-EG', { 
+        timeZone: 'Europe/Paris', 
+        hour12: false 
+    });
+    const endTimeStr = timer.endTime.toLocaleString('ar-EG', { 
+        timeZone: 'Europe/Paris', 
+        hour12: false 
+    });
+    
+    document.getElementById('startTime').textContent = startTimeStr;
+    document.getElementById('endTime').textContent = endTimeStr;
     
     const totalTime = timer.endTime - timer.startTime;
     const hours = Math.floor(totalTime / 3600000);
@@ -14827,77 +14654,6 @@ document.getElementById('endTime').textContent = endTimeStr;
     
     // Afficher la page des résultats
     showPage('resultsPage');
-    
-    // ✅ EFFACER L'ÉTAT DU QUIZ APRÈS TERMINATION
-    localStorage.removeItem('quranQuizState');
-    console.log('État du quiz supprimé (quiz terminé)');
-}
-
-function startNewQuizWithSameSettings() {
-    // Recommencer avec LES MÊMES données
-    // Ne pas toucher à quizConfig, il a les bonnes données
-    
-    // Réinitialiser UNIQUEMENT les variables de progression
-    currentQuestion = 0;
-    score = { correct: 0, incorrect: 0 };
-    quizHistory = [];
-    usedQuestions.clear();
-    
-    // Réinitialiser le timer
-    timer.startTime = new Date();
-    timer.totalPaused = 0;
-    
-    // Acquérir le Wake Lock
-    requestWakeLock();
-    
-    // Démarrer le timer
-    startTimer();
-    
-    // Afficher la page de quiz
-    showPage('quizPage');
-    updateQuizInterface();
-    generateNextQuestion();
-    
-    // Sauvegarder le nouvel état
-    saveQuizState();
-    
-    console.log('Nouveau quiz démarré avec les mêmes paramètres');
-}
-
-function resetAndGoHome() {
-    // Réinitialiser TOUTES les données à leurs valeurs par défaut
-    
-    // Effacer l'état du quiz
-    localStorage.removeItem('quranQuizState');
-    
-    // Réinitialiser les filtres par défaut
-    localStorage.setItem('savedStartSurah', '1');
-    localStorage.setItem('savedEndSurah', '114');
-    localStorage.setItem('savedStartVerse', '1');
-    localStorage.setItem('savedEndVerse', '6');
-    localStorage.setItem('savedQuestionCount', '5');
-    localStorage.removeItem('savedIncludePages');
-    localStorage.removeItem('savedMode');
-    
-    // Réinitialiser les variables du quiz
-    currentQuestion = 0;
-    score = { correct: 0, incorrect: 0 };
-    quizHistory = [];
-    usedQuestions.clear();
-    selectedMode = null;
-    
-    // Arrêter le timer
-    clearInterval(timer.intervalId);
-    releaseWakeLock();
-    
-    // Afficher la page d'accueil
-    showPage('homePage');
-    
-    // Repeupler les filtres avec les valeurs par défaut
-    populateSurahSelects();
-    updateVerseCount();
-    
-    console.log('Retour à l\'accueil avec données par défaut');
 }
 
 function displayDetailedHistory() {
@@ -14912,30 +14668,15 @@ function displayDetailedHistory() {
             let allCorrect = questionHistory.steps.every(step => step.correct);
             questionDiv.classList.add(allCorrect ? 'correct' : 'incorrect');
             
-            // Déterminer le type de question
-            const modeNames = {
-                1: 'النوع الأول',
-                2: 'النوع الثاني',
-                3: 'النوع الثالث'
-            };
-            const questionType = modeNames[questionHistory.mode] || 'غير معروف';
-            
-            let historyHTML = `
-                <div class="history-question">السؤال ${index + 1} - ${questionType}</div>
-            `;
+            let historyHTML = `<div class="history-question">السؤال ${index + 1}:</div>`;
             
             questionHistory.steps.forEach(step => {
-                const statusIcon = step.correct ? '<span style="color: #28a745; font-weight: bold;">✓</span>' : '<span style="color: #dc3545; font-weight: bold;">✗</span>';
+                const statusIcon = step.correct ? '✓' : '✗';
                 const statusClass = step.correct ? 'correct' : 'incorrect';
                 
                 historyHTML += `
                     <div class="history-answer ${statusClass}">
-                        <strong>الخطوة ${step.step}:</strong><br>
-                        <div style="margin-right: 1em; margin-top: 0.5em;">
-                            <strong>السؤال:</strong> ${step.questionText}<br>
-                            <strong>الإجابة الصحيحة:</strong> ${step.correctAnswer}<br>
-                            <strong>إجابتك:</strong> ${step.userAnswer} ${statusIcon}
-                        </div>
+                        ${statusIcon} الخطوة ${step.step}: ${step.answer}
                     </div>
                 `;
             });
@@ -14945,7 +14686,6 @@ function displayDetailedHistory() {
         }
     });
 }
-
 
 function showPage(pageId) {
     // Masquer toutes les pages
@@ -14987,7 +14727,7 @@ function shuffleArray(array) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         const swContent = `
-            const CACHE_NAME = 'quran-quiz-v1.0.1';
+            const CACHE_NAME = 'quran-quiz-v1';
             const urlsToCache = [
                 './',
                 './index.html',
@@ -15066,9 +14806,19 @@ if (existingManifest) {
 }
   </script>
 
+
+
+
+
+
+
+
+
+
+
 <!-- Partie 5 : sw.js (Service Worker - optionnel) inlined -->
   <script>
-const CACHE_NAME = 'quran-quiz-v1.0.1';
+const CACHE_NAME = 'quran-quiz-v1.0.0';
 const urlsToCache = [
     './',
     './index.html',
@@ -15122,5 +14872,12 @@ self.addEventListener('activate', event => {
 });
 
   </script>
+
+
+
+
+
+
+
 </body>
 </html>
