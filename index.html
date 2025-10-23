@@ -14994,7 +14994,7 @@ function displayDetailedHistory() {
             `;
             
             questionHistory.steps.forEach(step => {
-                const statusIcon = step.correct ? '<span style="color: #28a745; font-weight: bold;">✓</span>' : '<span style="color: #dc3545; font-weight: bold;">✗</span>';
+                const statusIcon = step.correct ? '<span style="color: #28a745; font-weight: 900; font-size: 1.3em;">✓</span>' : '<span style="color: #dc3545; font-weight: 900; font-size: 1.3em;">✗</span>';
                 const statusClass = step.correct ? 'correct' : 'incorrect';
                 
                 historyHTML += `
