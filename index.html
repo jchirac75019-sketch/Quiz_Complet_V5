@@ -1064,6 +1064,35 @@ html, body {
     }
 }
 
+/* Centrer les boutons "تأكيد الإجابة" et "الخطوة التالية" */
+#confirmAnswer {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5rem;  /* Réduit de var(--spacing-md) */
+    padding: 0.75rem 2rem;  /* Réduire la hauteur verticale */
+    width: 100%;
+    max-width: 400px;  /* Largeur pareille que les cadres */
+}
+
+#nextStep {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5rem;  /* Réduit de var(--spacing-md) */
+    padding: 0.75rem 2rem;  /* Réduire la hauteur verticale */
+    width: 100%;
+    max-width: 400px;  /* Largeur pareille que les cadres */
+}
+
+/* Réduire la hauteur du bouton fullscreen */
+#toggleFullscreen {
+    padding: 0.25rem 0.75rem !important;
+    height: auto !important;
+    min-height: auto !important;
+    font-size: 1.2rem;
+}
+
   </style>
 </head>
 <body>
@@ -1196,11 +1225,13 @@ html, body {
                     <span class="separator">من</span>
                     <span id="totalQuestions">5</span>
                 </div>
-                <div class="quiz-controls">
+                   <div class="quiz-controls">
+                    <button id="toggleFullscreen" class="btn-secondary" title="ملء الشاشة">🖥️</button>
                     <button id="homeBtn" class="btn-secondary">العودة للرئيسية</button>
                     <div class="timer">
                         <span id="timerDisplay">00:00:00</span>
                     </div>
+
                 </div>
                 <div class="score-display">
                 <div class="score-item correct">
@@ -14205,6 +14236,9 @@ function startQuiz() {
     
     // Sauvegarder l'état du quiz
     saveQuizState();
+    
+    // Auto fullscreen au démarrage du quiz
+    enterFullscreenForQuiz();
 }
 
 function restoreQuizState() {
@@ -15133,6 +15167,66 @@ if (existingManifest) {
     manifestLink.href = manifestUrl;
     document.head.appendChild(manifestLink);
 }
+
+// Fullscreen functionality
+let isFullscreen = false;
+
+const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
+if (toggleFullscreenBtn) {
+    toggleFullscreenBtn.addEventListener('click', toggleFullscreen);
+}
+
+function toggleFullscreen() {
+    if (!isFullscreen) {
+        // Entrer en plein écran
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+        isFullscreen = true;
+        toggleFullscreenBtn.textContent = '⛔';
+    } else {
+        // Quitter plein écran
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        isFullscreen = false;
+        toggleFullscreenBtn.textContent = '🖥️';
+    }
+}
+
+// Auto fullscreen au démarrage du quiz
+function enterFullscreenForQuiz() {
+    setTimeout(() => {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(() => {});
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+        isFullscreen = true;
+        if (toggleFullscreenBtn) {
+            toggleFullscreenBtn.textContent = '⛔';
+        }
+    }, 300);
+}
+
   </script>
 
 <!-- Partie 5 : sw.js (Service Worker - optionnel) inlined -->
