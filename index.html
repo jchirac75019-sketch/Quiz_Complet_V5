@@ -14561,14 +14561,14 @@ function displayMode1Question() {
         generateVerseTextOptions(verse.text);
     } else if (currentQuestionData.currentStep === 2 && quizConfig.includePages) {
         document.getElementById('questionText').innerHTML = `
-            <div style="font-size: 1.5em; margin-bottom: 0.25rem;">
-                <strong>سورة ${surah.name_arabic} - الآية رقم ${verse.verseNumber}</strong>
-            </div>
             <div style="background: #f0f8ff; padding: 1em; border-radius: 8px; margin: 1em 0;">
-                ${verse.text}
-            </div>
-            <div class="question-blink">اختر رقم الصفحة الصحيح لهذه الآية:</div>
-        `;
+            ${verse.text}
+           </div>
+            <div style="color: #666; margin-bottom: 0.5em;">
+            سورة <span class="highlight-blue">${surah.name_arabic}</span> - الآية رقم <span class="highlight-  blue">${verse.verseNumber}</span>
+          </div>
+           <div class="question-blink">اختر رقم الصفحة الصحيح لهذه الآية:</div>
+    `;
         
         document.getElementById('stepIndicator').textContent = 
             `الخطوة 2 من ${currentQuestionData.steps}: اختيار رقم الصفحة`;
