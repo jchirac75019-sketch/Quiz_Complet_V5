@@ -13966,11 +13966,11 @@ document.addEventListener('DOMContentLoaded', function() {
     preventRefreshDuringQuiz();
 
     // Enregistrer le Service Worker pour PWA
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-            .then(registration => console.log('Service Worker enregistré'))
-            .catch(error => console.log('Erreur Service Worker:', error));
-    }
+    // if ('serviceWorker' in navigator) {
+        // navigator.serviceWorker.register('sw.js')
+            // .then(registration => console.log('Service Worker enregistré'))
+            // .catch(error => console.log('Erreur Service Worker:', error));
+    // }
 });
 
 // Fonctions d'initialisation
@@ -15096,47 +15096,12 @@ function shuffleArray(array) {
     }
 }
 
-// Service Worker pour PWA
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        const swContent = `
-            const CACHE_NAME = 'quran-quiz-v1.0.1';
-            const urlsToCache = [
-                './',
-                './index.html',
-                './style.css',
-                './app.js',
-                './manifest.json'
-            ];
-
-            self.addEventListener('install', event => {
-                event.waitUntil(
-                    caches.open(CACHE_NAME)
-                        .then(cache => cache.addAll(urlsToCache))
-                );
-            });
-
-            self.addEventListener('fetch', event => {
-                event.respondWith(
-                    caches.match(event.request)
-                        .then(response => {
-                            if (response) {
-                                return response;
-                            }
-                            return fetch(event.request);
-                        })
-                );
-            });
-        `;
-        
-        const blob = new Blob([swContent], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        
-        navigator.serviceWorker.register(swUrl)
-            .then(registration => console.log('Service Worker enregistré'))
-            .catch(error => console.log('Erreur Service Worker:', error));
-    });
+  navigator.serviceWorker.register('/quiz-general-premier/sw.js')
+    .then(reg => console.log('Service Worker enregistré:', reg.scope))
+    .catch(err => console.error('Erreur Service Worker:', err));
 }
+
 
 // Manifest PWA intégré
 const manifestContent = {
@@ -15293,12 +15258,6 @@ self.addEventListener('activate', event => {
         })
     );
 });
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/quiz-general-premier/sw.js')
-    .then(reg => console.log('Service Worker enregistré:', reg.scope))
-    .catch(err => console.error('Erreur Service Worker:', err));
-}
 
   </script>
 </body>

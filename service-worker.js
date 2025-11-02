@@ -1,12 +1,12 @@
-const CACHE_NAME = 'quran-quiz-v1.0.0';
+const CACHE_NAME = 'quiz-general-premier-v1.0.0';
 const urlsToCache = [
-  './',
-  './index.html',
-  './style.css',
-  './app.js',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  '/quiz-general-premier/',
+  '/quiz-general-premier/index.html',
+  '/quiz-general-premier/style.css',
+  '/quiz-general-premier/app.js',
+  '/quiz-general-premier/manifest.json',
+  '/quiz-general-premier/images/icon-192.png',
+  '/quiz-general-premier/images/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
