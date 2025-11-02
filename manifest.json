@@ -1,6 +1,6 @@
 {
   "id": "quran-quiz-app",
-  "name": "إختبار شامل1 (إدريس بن صالح)",
+  "name": "إختبار شامل1",
   "short_name": "إختبار شامل1",
   "description": "Interactive Quranic verse quiz with audio, scoring, and Arabic support. Available on Windows, Android, and iOS.",
   "start_url": "/quiz-general-premier/",
