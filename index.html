@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- ========== ENCODAGE - CHARACTER ENCODING ========== -->
     <meta charset="UTF-8">
+    
+    <!-- ========== VIEWPORT - MOBILE CONFIGURATION ========== -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     
-    <!-- Manifest pour Android et Web -->
+    <!-- ========== SERVICE WORKER REGISTRATION - PWA OFFLINE ==========
+         Enregistre le Service Worker pour fonctionnement hors ligne
+    ========== -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(() => {
+          console.log('✅ Service Worker enregistré avec succès');
+        }).catch(err => {
+          console.error('⚠️ Erreur enregistrement Service Worker:', err);
+        });
+      }
+    </script>
+    
+    <!-- ========== MANIFEST POUR PWA - APP INSTALLATION ==========
+         Permet installation comme app native sur téléphone + ordinateur
+    ========== -->
     <link rel="manifest" href="/quiz-general-premier/manifest.json">
     
-    <!-- Configuration pour Windows -->
+    <!-- ========== CONFIGURATION WINDOWS - WINDOWS TILE ==========
+         Pour l'épingle au menu Démarrer sur Windows
+    ========== -->
     <meta name="msapplication-config" content="/quiz-general-premier/browserconfig.xml">
     <meta name="msapplication-TileColor" content="#21808D">
     <meta name="msapplication-TileImage" content="/quiz-general-premier/images/icon-192.png">
     
-    <!-- Configuration pour Android -->
+    <!-- ========== CONFIGURATION ANDROID - ANDROID APP ==========
+         Couleur thème pour Android + capacités web app
+    ========== -->
     <meta name="theme-color" content="#21808D">
     <meta name="mobile-web-app-capable" content="yes">
     
-    <!-- Configuration pour iOS/Apple -->
+    <!-- ========== CONFIGURATION iOS/APPLE - iOS APP ==========
+         Support pour iOS et macOS
+    ========== -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="اختبار القرآن">
-    <!-- Si tu n'as pas icon-apple-180.png, retire la ligne ci-dessous -->
-    <!-- <link rel="apple-touch-icon" href="/quiz-general-premier/images/icon-apple-180.png"> -->
+    <link rel="apple-touch-icon" href="/quiz-general-premier/images/icon-192.png">
     
-    <!-- Favicon standard -->
+    <!-- ========== FAVICON & ICÔNES - ICONS & FAVICON ==========
+         Références aux icônes pour différents appareils
+    ========== -->
     <link rel="icon" href="/quiz-general-premier/images/icon-192.png" sizes="192x192" type="image/png">
     <link rel="icon" href="/quiz-general-premier/images/icon-512.png" sizes="512x512" type="image/png">
     
+    <!-- ========== TITRE DE PAGE - PAGE TITLE ========== -->
     <title>اختبار الآيات القرآنية</title>
     
+    <!-- ========== STYLES INLINE - INLINE STYLES (ORIGINAL PRESERVED) ==========
+         Tous les styles CSS originaux conservés intégralement
+    ========== -->
     <style>
 
 /* Arabic Fonts Import */
@@ -203,7 +232,7 @@ body {
     font-size: 0.9rem;           /* un peu plus petit que var(--font-lg) */
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 0.25rem;      /* réduire l’espace sous le label */
+    margin-bottom: 0.25rem;      /* réduire l'espace sous le label */
 }
 /* ------- Nouvelle version réduite et plus compacte du CSS pour la zone des titres dans le 2ème cadre------- */
 
@@ -507,7 +536,7 @@ body {
     border: 2px solid var(--error-color);
 }
 
-/* Labels à l’intérieur des compteurs */
+/* Labels à l'intérieur des compteurs */
 .quiz-header .timer {
   padding: 0.25rem 0.8rem;
   font-size: 1.2rem;
@@ -518,15 +547,15 @@ body {
 /* Question Container */
 .question-container {
     min-height: unset;    /* ou min-height: 180px; pour mobile */
-    padding: 0.4rem 0.6rem;  /* (ajoute ou ajuste le padding s’il existe) */
+    padding: 0.4rem 0.6rem;  /* (ajoute ou ajuste le padding s'il existe) */
 }
 
 /* - Nouvelle version : exemple de CSS pour réduire la hauteur de ce cadre - */
 .question-subject {
     padding: 0.25rem 0.5rem;    /* Réduire le padding vertical et horizontal */
     font-size: 1rem;            /* Taille de police un peu plus petite */
-    margin-bottom: 0.5rem;      /* Réduire l’espace sous le cadre */
-    line-height: 1.2;           /* Réduire l’interligne */
+    margin-bottom: 0.5rem;      /* Réduire l'espace sous le cadre */
+    line-height: 1.2;           /* Réduire l'interligne */
     border-radius: 6px;         /* Garder un léger arrondi */
     background-color: #eef7f8; /* Conserver un fond clair si nécessaire */
 }
@@ -537,9 +566,9 @@ body {
 #questionText {
     padding: 0.1rem 0.25rem;     /* Réduire les espacements internes */
     font-size: 1.15rem;             /* Taille de police plus petite */
-    line-height: 1.2;            /* Réduire l’interlignage vertical */
+    line-height: 1.2;            /* Réduire l'interlignage vertical */
     margin-bottom: 0.2rem;       /* Réduire la marge sous le cadre */
-    max-height: none;            /* S’il y a une hauteur max, la supprimer */
+    max-height: none;            /* S'il y a une hauteur max, la supprimer */
     background-color: transparent; /* Si un fond est appliqué, le réduire ou enlever */
 }
 
@@ -1103,7 +1132,7 @@ html, body {
     font-size: 1.2rem;
 }
 
-  </style>
+    </style>
 </head>
 <body>
   <!-- Page d'accueil -->
